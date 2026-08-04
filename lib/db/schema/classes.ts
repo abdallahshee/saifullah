@@ -12,9 +12,6 @@ export const classes = pgTable(
     teacherId: uuid("teacher_id").references(() => profiles.id, {
       onDelete: "set null",
     }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
   },
   () => [
     // Any signed-in staff member (admin/secretary/teacher) can view the

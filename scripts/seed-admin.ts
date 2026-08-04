@@ -17,11 +17,12 @@ async function main() {
   }
 
   const { admitStaffMember } = await import("../lib/auth/admit-staff");
-  const { userId, temporaryPassword } = await admitStaffMember(
+  const { userId, temporaryPassword } = await admitStaffMember({
     email,
-    "Abdallah Shee",
-    "admin",
-  );
+    firstName: "Abdallah",
+    lastName: "Shee",
+    role: "admin",
+  });
 
   console.log(`Admin profile ready for ${email} (auth user ${userId})`);
   if (temporaryPassword) {

@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { profiles, profileRoles, userRole } from "@/lib/db/schema";
+import { profiles, userRole } from "@/lib/db/schema";
 import { createClient } from "@/lib/supabase/server";
 
 export type Role = (typeof userRole.enumValues)[number];
@@ -26,12 +26,7 @@ export async function getCurrentProfile() {
 
   if (!profile) return null;
 
-  const roleRows = await db
-    .select({ role: profileRoles.role })
-    .from(profileRoles)
-    .where(eq(profileRoles.profileId, user.id));
-
-  return { ...profile, roles: roleRows.map((r) => r.role) };
+  return { ...profile, roles: profile.role ?? [] };
 }
 
 /**

@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { pgTable, pgPolicy, uuid, text, timestamp } from "drizzle-orm/pg-core";
 import { authUsers, authenticatedRole } from "drizzle-orm/supabase";
+import { userRole } from "./enums";
 
 /**
  * One row per person who can sign in - staff (admin, secretary, teacher)
@@ -10,10 +11,9 @@ import { authUsers, authenticatedRole } from "drizzle-orm/supabase";
  * first admin has to be inserted directly (RLS blocks insert otherwise) -
  * see drizzle/0001_snapshot's companion migration notes.
  *
- * Role is *not* a column here - see `profile_roles`. A profile can hold
- * more than one role (e.g. a teacher who is also a parent at the school),
- * so role membership is a separate many-to-many table rather than a single
- * enum column.
+ * `role` holds every role a profile has (e.g. a teacher who is also a
+ * parent at the school), so it's an array column rather than a single
+ * enum value.
  *
  * `phone` is mainly for parents (SMS notifications - absence alerts,
  * report-ready alerts, fee reminders/receipts), but left open to staff too
@@ -25,8 +25,11 @@ export const profiles = pgTable(
     id: uuid("id")
       .primaryKey()
       .references(() => authUsers.id, { onDelete: "cascade" }),
-    fullName: text("full_name").notNull(),
+    firstName: text("first_name").notNull(),
+    lastName: text("last_name").notNull(),
     phone: text("phone"),
+    role: userRole("role").array(),  
+    email:text("email"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -62,13 +65,13 @@ export const profiles = pgTable(
       to: authenticatedRole,
       using: sql`has_role('admin')`,
     }),
-    // Secretary can view and edit a parent's contact details (fullName,
-    // phone) once the profile + 'parent' role row already exist.
+    // Secretary can view and edit a parent's contact details (name, phone)
+    // once the profile already has the 'parent' role.
     pgPolicy("profiles_write_secretary_parent_only", {
       for: "all",
       to: authenticatedRole,
-      using: sql`has_role('secretary') and exists (select 1 from profile_roles pr where pr.profile_id = ${t.id} and pr.role = 'parent')`,
-      withCheck: sql`has_role('secretary') and exists (select 1 from profile_roles pr where pr.profile_id = ${t.id} and pr.role = 'parent')`,
+      using: sql`has_role('secretary') and 'parent' = any(${t.role})`,
+      withCheck: sql`has_role('secretary') and 'parent' = any(${t.role})`,
     }),
   ],
 ).enableRLS();

@@ -1,6 +1,5 @@
 export * from "./enums";
 export * from "./profiles";
-export * from "./profile-roles";
 export * from "./classes";
 export * from "./students";
 export * from "./student-guardians";
