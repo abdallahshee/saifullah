@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1785827366132,
+      "tag": "0000_school_rbac_and_fees_baseline",
+      "breakpoints": true
+    }
+  ]
+}
