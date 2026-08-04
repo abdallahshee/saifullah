@@ -1,5 +1,7 @@
-import { userRole, reportStatus, termName } from "../schema/enums";
+import { z } from "zod";
+import { userRole, reportStatus, termName, attendanceStatus } from "../schema/enums";
 
-export type UserRole = (typeof userRole.enumValues)[number];
-export type ReportStatus = (typeof reportStatus.enumValues)[number];
-export type TermName = (typeof termName.enumValues)[number];
+export const userRoleSchema = z.enum(userRole.enumValues);
+export const reportStatusSchema = z.enum(reportStatus.enumValues);
+export const termNameSchema = z.enum(termName.enumValues);
+export const attendanceStatusSchema = z.enum(attendanceStatus.enumValues);

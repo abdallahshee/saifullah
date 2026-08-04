@@ -1,14 +1,23 @@
 import { sql } from "drizzle-orm";
 import { pgTable, pgPolicy, uuid, text, timestamp } from "drizzle-orm/pg-core";
 import { authUsers, authenticatedRole } from "drizzle-orm/supabase";
-import { userRole } from "./enums";
 
 /**
- * One row per staff member (admin, secretary, teacher) who can sign in.
- * `id` is the Supabase auth user id. There's no self-signup: an admin
- * creates the auth user (service role) and the matching profile row.
- * The very first admin has to be inserted directly (RLS blocks insert
- * otherwise) - see drizzle/0001_snapshot's companion migration notes.
+ * One row per person who can sign in - staff (admin, secretary, teacher)
+ * and parents alike. `id` is the Supabase auth user id. There's no
+ * self-signup: an admin creates a staff auth user (service role) and the
+ * matching profile row; a secretary does the same for a parent. The very
+ * first admin has to be inserted directly (RLS blocks insert otherwise) -
+ * see drizzle/0001_snapshot's companion migration notes.
+ *
+ * Role is *not* a column here - see `profile_roles`. A profile can hold
+ * more than one role (e.g. a teacher who is also a parent at the school),
+ * so role membership is a separate many-to-many table rather than a single
+ * enum column.
+ *
+ * `phone` is mainly for parents (SMS notifications - absence alerts,
+ * report-ready alerts, fee reminders/receipts), but left open to staff too
+ * rather than splitting it out for one role.
  */
 export const profiles = pgTable(
   "profiles",
@@ -17,7 +26,7 @@ export const profiles = pgTable(
       .primaryKey()
       .references(() => authUsers.id, { onDelete: "cascade" }),
     fullName: text("full_name").notNull(),
-    role: userRole("role").notNull(),
+    phone: text("phone"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -28,27 +37,38 @@ export const profiles = pgTable(
     pgPolicy("profiles_select_own_or_admin", {
       for: "select",
       to: authenticatedRole,
-      using: sql`${t.id} = auth.uid() or current_app_role() = 'admin'`,
+      using: sql`${t.id} = auth.uid() or has_role('admin')`,
     }),
-    // Only admin can create staff profiles (i.e. admit a new teacher/secretary).
+    // Only admin can create a profile (staff onboarding). Parent onboarding
+    // by the secretary goes through the same trusted, service-role-backed
+    // provisioning path as staff (see admitStaffMember) rather than a
+    // direct-from-client insert, so no secretary insert policy is needed
+    // here.
     pgPolicy("profiles_insert_admin_only", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`current_app_role() = 'admin'`,
+      withCheck: sql`has_role('admin')`,
     }),
-    // Anyone can update their own profile; admin can update anyone's (e.g.
-    // to change a role).
+    // Anyone can update their own profile; admin can update anyone's.
     pgPolicy("profiles_update_own_or_admin", {
       for: "update",
       to: authenticatedRole,
-      using: sql`${t.id} = auth.uid() or current_app_role() = 'admin'`,
-      withCheck: sql`${t.id} = auth.uid() or current_app_role() = 'admin'`,
+      using: sql`${t.id} = auth.uid() or has_role('admin')`,
+      withCheck: sql`${t.id} = auth.uid() or has_role('admin')`,
     }),
-    // Only admin can remove a staff profile.
+    // Only admin can remove a profile.
     pgPolicy("profiles_delete_admin_only", {
       for: "delete",
       to: authenticatedRole,
-      using: sql`current_app_role() = 'admin'`,
+      using: sql`has_role('admin')`,
+    }),
+    // Secretary can view and edit a parent's contact details (fullName,
+    // phone) once the profile + 'parent' role row already exist.
+    pgPolicy("profiles_write_secretary_parent_only", {
+      for: "all",
+      to: authenticatedRole,
+      using: sql`has_role('secretary') and exists (select 1 from profile_roles pr where pr.profile_id = ${t.id} and pr.role = 'parent')`,
+      withCheck: sql`has_role('secretary') and exists (select 1 from profile_roles pr where pr.profile_id = ${t.id} and pr.role = 'parent')`,
     }),
   ],
 ).enableRLS();

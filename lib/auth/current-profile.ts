@@ -1,11 +1,16 @@
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { profiles, userRole } from "@/lib/db/schema";
+import { profiles, profileRoles, userRole } from "@/lib/db/schema";
 import { createClient } from "@/lib/supabase/server";
 
 export type Role = (typeof userRole.enumValues)[number];
 
+/**
+ * A profile can hold more than one role (e.g. a teacher who's also a
+ * parent at the school) - `roles` is every role currently assigned to
+ * them, not a single value.
+ */
 export async function getCurrentProfile() {
   const supabase = await createClient();
   const {
@@ -19,7 +24,14 @@ export async function getCurrentProfile() {
     .from(profiles)
     .where(eq(profiles.id, user.id));
 
-  return profile ?? null;
+  if (!profile) return null;
+
+  const roleRows = await db
+    .select({ role: profileRoles.role })
+    .from(profileRoles)
+    .where(eq(profileRoles.profileId, user.id));
+
+  return { ...profile, roles: roleRows.map((r) => r.role) };
 }
 
 /**
@@ -34,7 +46,7 @@ export async function requireRole(...allowed: Role[]) {
   const profile = await getCurrentProfile();
 
   if (!profile) redirect("/auth/login");
-  if (!allowed.includes(profile.role)) redirect("/");
+  if (!profile.roles.some((role) => allowed.includes(role))) redirect("/");
 
   return profile;
 }

@@ -29,8 +29,8 @@ export const classTermFees = pgTable(
     pgPolicy("class_term_fees_write_secretary_admin", {
       for: "all",
       to: authenticatedRole,
-      using: sql`current_app_role() in ('secretary', 'admin')`,
-      withCheck: sql`current_app_role() in ('secretary', 'admin')`,
+      using: sql`(has_role('secretary') or has_role('admin'))`,
+      withCheck: sql`(has_role('secretary') or has_role('admin'))`,
     }),
   ],
 ).enableRLS();

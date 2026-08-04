@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 import { db } from "@/lib/db";
-import { profiles } from "@/lib/db/schema";
+import { profiles, profileRoles } from "@/lib/db/schema";
 import type { Role } from "./current-profile";
 
 /**
@@ -46,11 +46,13 @@ export async function admitStaffMember(email: string, fullName: string, role: Ro
 
   await db
     .insert(profiles)
-    .values({ id: userId, fullName, role })
+    .values({ id: userId, fullName })
     .onConflictDoUpdate({
       target: profiles.id,
-      set: { fullName, role },
+      set: { fullName },
     });
+
+  await db.insert(profileRoles).values({ profileId: userId, role }).onConflictDoNothing();
 
   return { userId, temporaryPassword };
 }

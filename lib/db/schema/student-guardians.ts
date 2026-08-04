@@ -2,9 +2,20 @@ import { sql } from "drizzle-orm";
 import { pgTable, pgPolicy, uuid, text, primaryKey } from "drizzle-orm/pg-core";
 import { authenticatedRole } from "drizzle-orm/supabase";
 import { students } from "./students";
-import { parents } from "./parents";
+import { profiles } from "./profiles";
 
-/** Links students to their parents/guardians (many-to-many). */
+/**
+ * Links students to their parents/guardians (many-to-many): a parent can
+ * have many children, a student can have many rows here too, but is capped
+ * at 2 guardians. That cap is enforced in the server action that inserts
+ * these rows, not in the DB - count the student's existing rows before
+ * inserting a third.
+ *
+ * `parentId` references `profiles.id` (not a separate parents table) -
+ * every parent is a profile with role = 'parent'. Nothing at the DB level
+ * stops linking a non-parent profile here; the server action that creates
+ * these rows must check the target profile's role.
+ */
 export const studentGuardians = pgTable(
   "student_guardians",
   {
@@ -13,7 +24,7 @@ export const studentGuardians = pgTable(
       .references(() => students.id, { onDelete: "cascade" }),
     parentId: uuid("parent_id")
       .notNull()
-      .references(() => parents.id, { onDelete: "cascade" }),
+      .references(() => profiles.id, { onDelete: "cascade" }),
     relationship: text("relationship").notNull(),
   },
   (t) => [
@@ -22,8 +33,8 @@ export const studentGuardians = pgTable(
     pgPolicy("student_guardians_secretary_only", {
       for: "all",
       to: authenticatedRole,
-      using: sql`current_app_role() = 'secretary'`,
-      withCheck: sql`current_app_role() = 'secretary'`,
+      using: sql`has_role('secretary')`,
+      withCheck: sql`has_role('secretary')`,
     }),
   ],
 ).enableRLS();

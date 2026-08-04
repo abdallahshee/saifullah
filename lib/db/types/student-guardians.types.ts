@@ -1,4 +1,5 @@
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { studentGuardians } from "../schema/student-guardians";
 
-export type StudentGuardianSelect = typeof studentGuardians.$inferSelect;
-export type StudentGuardianInsert = typeof studentGuardians.$inferInsert;
+export const studentGuardianSelectSchema = createSelectSchema(studentGuardians);
+export const studentGuardianInsertSchema = createInsertSchema(studentGuardians);

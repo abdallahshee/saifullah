@@ -44,14 +44,20 @@ export const feeRecords = pgTable(
     pgPolicy("fee_records_secretary_full", {
       for: "all",
       to: authenticatedRole,
-      using: sql`current_app_role() = 'secretary'`,
-      withCheck: sql`current_app_role() = 'secretary'`,
+      using: sql`has_role('secretary')`,
+      withCheck: sql`has_role('secretary')`,
     }),
     // Admin gets read-only access, for analytics (e.g. billed vs collected).
     pgPolicy("fee_records_admin_read", {
       for: "select",
       to: authenticatedRole,
-      using: sql`current_app_role() = 'admin'`,
+      using: sql`has_role('admin')`,
+    }),
+    // A parent can view the fee records (invoices) for their own children.
+    pgPolicy("fee_records_select_own_children_parent", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`has_role('parent') and is_parent_of_student(${t.studentId})`,
     }),
   ],
 ).enableRLS();

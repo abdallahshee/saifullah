@@ -1,4 +1,5 @@
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { feeRecords } from "../schema/fee-records";
 
-export type FeeRecordSelect = typeof feeRecords.$inferSelect;
-export type FeeRecordInsert = typeof feeRecords.$inferInsert;
+export const feeRecordSelectSchema = createSelectSchema(feeRecords);
+export const feeRecordInsertSchema = createInsertSchema(feeRecords);

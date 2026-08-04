@@ -1,4 +1,5 @@
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { classes } from "../schema/classes";
 
-export type ClassSelect = typeof classes.$inferSelect;
-export type ClassInsert = typeof classes.$inferInsert;
+export const classSelectSchema = createSelectSchema(classes);
+export const classInsertSchema = createInsertSchema(classes);

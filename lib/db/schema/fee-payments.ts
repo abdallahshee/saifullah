@@ -33,23 +33,31 @@ export const feePayments = pgTable(
       onDelete: "set null",
     }),
   },
-  () => [
+  (t) => [
     // Secretary reads and records M-Pesa payments as they come in.
     pgPolicy("fee_payments_select_secretary", {
       for: "select",
       to: authenticatedRole,
-      using: sql`current_app_role() = 'secretary'`,
+      using: sql`has_role('secretary')`,
     }),
     pgPolicy("fee_payments_insert_secretary", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`current_app_role() = 'secretary'`,
+      withCheck: sql`has_role('secretary')`,
     }),
     // Admin gets read-only access, for analytics (e.g. collections over time).
     pgPolicy("fee_payments_select_admin", {
       for: "select",
       to: authenticatedRole,
-      using: sql`current_app_role() = 'admin'`,
+      using: sql`has_role('admin')`,
+    }),
+    // A parent can view the payments logged against their own children's
+    // fee records (feeRecordId only identifies the student transitively,
+    // hence the dedicated helper rather than reusing is_parent_of_student).
+    pgPolicy("fee_payments_select_own_children_parent", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`has_role('parent') and is_parent_of_fee_record(${t.feeRecordId})`,
     }),
   ],
 ).enableRLS();

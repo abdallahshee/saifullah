@@ -26,20 +26,26 @@ export const students = pgTable(
     pgPolicy("students_select_secretary_admin", {
       for: "select",
       to: authenticatedRole,
-      using: sql`current_app_role() in ('secretary', 'admin')`,
+      using: sql`(has_role('secretary') or has_role('admin'))`,
     }),
     // A teacher can only view students in the class they're assigned to.
     pgPolicy("students_select_own_class_teacher", {
       for: "select",
       to: authenticatedRole,
-      using: sql`current_app_role() = 'teacher' and is_teacher_of_class(${t.classId})`,
+      using: sql`has_role('teacher') and is_teacher_of_class(${t.classId})`,
+    }),
+    // A parent can only view their own child/children.
+    pgPolicy("students_select_own_children_parent", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`has_role('parent') and is_parent_of_student(${t.id})`,
     }),
     // Only secretary can admit, edit, or remove a student.
     pgPolicy("students_write_secretary_only", {
       for: "all",
       to: authenticatedRole,
-      using: sql`current_app_role() = 'secretary'`,
-      withCheck: sql`current_app_role() = 'secretary'`,
+      using: sql`has_role('secretary')`,
+      withCheck: sql`has_role('secretary')`,
     }),
   ],
 ).enableRLS();

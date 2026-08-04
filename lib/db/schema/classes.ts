@@ -29,8 +29,8 @@ export const classes = pgTable(
     pgPolicy("classes_write_admin_only", {
       for: "all",
       to: authenticatedRole,
-      using: sql`current_app_role() = 'admin'`,
-      withCheck: sql`current_app_role() = 'admin'`,
+      using: sql`has_role('admin')`,
+      withCheck: sql`has_role('admin')`,
     }),
   ],
 ).enableRLS();
