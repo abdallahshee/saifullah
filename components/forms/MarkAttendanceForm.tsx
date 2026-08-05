@@ -10,16 +10,14 @@ import {
   type ClassRosterEntry,
 } from "@/server/attendance.server";
 
-type AttendanceEntry = {
-  studentId: string;
-  firstName: string;
-  lastName: string;
+
+type FormEntry = Omit<ClassRosterEntry, "status"> & {
   status: "present" | "absent";
 };
 
 type FormValues = {
   date: string;
-  entries: AttendanceEntry[];
+  entries: FormEntry[];
 };
 
 type LoadState =

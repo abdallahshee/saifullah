@@ -1,7 +1,7 @@
 "use server";
 
 import { and, eq } from "drizzle-orm";
-import { getCurrentProfile, requireRole } from "@/lib/auth/current-profile";
+import { requireRole } from "@/lib/auth/current-profile";
 import { db } from "@/lib/db";
 import { attendanceRecords, classes, students } from "@/lib/db/schema";
 import {
@@ -15,8 +15,10 @@ import {
  * they actually teach by hand. Admins bypass this (their override policy
  * covers every class).
  */
-// const assertCanMarkClass=async(classId: string)=> {
-//   const profile = await requireRole("teacher");
+// async function assertCanMarkClass(classId: string) {
+//   const profile = await requireRole("teacher", "admin");
+//   if (profile.roles.includes("admin")) return profile;
+
 //   const [klass] = await db.select().from(classes).where(eq(classes.id, classId));
 //   if (!klass || klass.teacherId !== profile.id) {
 //     throw new Error("You are not the teacher of this class");
@@ -39,7 +41,8 @@ export async function getClassAttendanceRoster(
   classId: string,
   date: string,
 ): Promise<ClassRosterEntry[]> {
-await requireRole("teacher")
+  // await assertCanMarkClass(classId);
+
   return db
     .select({
       studentId: students.id,
@@ -65,8 +68,8 @@ await requireRole("teacher")
  * admin override, not something this method supports.
  */
 export async function submitClassAttendance(input: MarkAttendanceRequest) {
+  const profile = await requireRole("teacher", "secretary");
   const parsed = markAttendanceSchema.parse(input);
-  const profile=await getCurrentProfile()
 
   const roster = await db
     .select({ id: students.id })

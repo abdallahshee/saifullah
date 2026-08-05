@@ -14,9 +14,9 @@ const attendanceEntrySchema = z.object({
 
 export const markAttendanceSchema = z.object({
   classId: z.uuid(),
-  date: new Date(),
+  date: z.string().min(1, { message: "Date is required" }),
   records: z.array(attendanceEntrySchema).min(1, {
     message: "At least one student is required",
-  }),
+  }).nonempty(),
 });
 export type MarkAttendanceRequest = z.infer<typeof markAttendanceSchema>;

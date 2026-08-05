@@ -1,9 +1,19 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
-:root {
+/* :root {
   --background: #ffffff;
   --foreground: #171717;
+} */
+
+:root {
+  --brand-navy: #16233f;
+  --brand-navy-2: #1f3358;
+  --brand-gold: #d9a64e;
+  --paper: #faf9f6;
+  --ink: #1b2430;
+  --slate: #64748b;
+  --line: #e4e1d8;
 }
 
 @theme inline {
