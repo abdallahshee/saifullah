@@ -1,12 +1,24 @@
 import type { ReactNode } from "react";
+import { GraduationCap } from "lucide-react";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="grid min-h-screen lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <div className="grid flex-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <BrandPanel />
 
       <div className="flex items-center justify-center bg-[var(--paper)] px-6 py-16 sm:px-10">
-        <div className="w-full max-w-sm">{children}</div>
+        <div className="w-full max-w-sm">
+          <h1 className="text-center font-serif text-3xl leading-tight text-[var(--ink)] sm:text-4xl">
+            Every child,
+            <br />
+            accounted for.
+          </h1>
+          <p className="mt-3 text-center text-sm leading-relaxed text-[var(--slate)]">
+            Sign in to manage admissions, rosters, and daily attendance.
+          </p>
+
+          <div className="mt-8">{children}</div>
+        </div>
       </div>
     </div>
   );
@@ -17,19 +29,13 @@ function BrandPanel() {
     <div className="relative hidden overflow-hidden bg-gradient-to-br from-[var(--brand-navy)] to-[var(--brand-navy-2)] px-12 py-14 lg:flex lg:flex-col lg:justify-between">
       <RollGrid />
 
-      <div className="relative z-10 font-mono text-xs tracking-[0.2em] text-[var(--brand-gold)]">
-        STAFF &amp; FAMILY PORTAL
+      <div className="relative z-10 flex items-center gap-2">
+        <GraduationCap className="h-6 w-6 text-[var(--brand-gold)]" />
+        <span className="font-serif text-lg text-white">Saifullah</span>
       </div>
 
-      <div className="relative z-10 max-w-sm">
-        <h1 className="font-serif text-4xl leading-tight text-white">
-          Every child,
-          <br />
-          accounted for.
-        </h1>
-        <p className="mt-4 text-sm leading-relaxed text-white/60">
-          Sign in to manage admissions, rosters, and daily attendance.
-        </p>
+      <div className="relative z-10 font-mono text-xs tracking-[0.2em] text-[var(--brand-gold)]">
+        SCHOOL PORTAL
       </div>
     </div>
   );

@@ -1,22 +1,14 @@
+import { CarouselEvent, EventCarousel } from "@/components/EventCarousel";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col bg-[var(--paper)]">
-      <header className="flex items-center justify-between px-8 py-6 sm:px-12">
-        <span className="font-serif text-lg text-[var(--ink)]">Roster</span>
-        <Link
-          href="/login"
-          className="rounded-full border border-[var(--line)] px-5 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--brand-navy)] hover:text-[var(--brand-navy)]"
-        >
-          Sign in
-        </Link>
-      </header>
-
-      <main className="flex flex-1 flex-col items-center justify-center px-8 py-20 text-center sm:px-12">
+    <>
+      <main className="flex flex-1 flex-col items-center px-8 py-16 text-center sm:px-12">
         <p className="font-mono text-xs tracking-[0.2em] text-[var(--slate)]">
           SCHOOL OPERATIONS PLATFORM
         </p>
+
 
         <h1 className="mt-4 max-w-2xl text-balance font-serif text-4xl leading-tight text-[var(--ink)] sm:text-5xl">
           One record for every student, every day.
@@ -33,16 +25,25 @@ export default function Home() {
         >
           Sign in to your account
         </Link>
+
+        <div className="mt-16 w-full">
+          <p className="font-mono text-xs tracking-[0.2em] text-[var(--slate)]">
+            FROM OUR COMMUNITY
+          </p>
+          <h2 className="mt-2 font-serif text-2xl text-[var(--ink)]">
+            Moments from around the school
+          </h2>
+
+          {/* <div className="mt-8">
+            <EventCarousel events={PAST_EVENTS} />
+          </div> */}
+        </div>
       </main>
 
-    
-
       <RollGridFooter />
-    </div>
+    </>
   );
 }
-
-
 
 // Quiet echo of the roll-call motif from the auth pages — fully "checked"
 // here, as a calm closing note rather than the page's main visual event.

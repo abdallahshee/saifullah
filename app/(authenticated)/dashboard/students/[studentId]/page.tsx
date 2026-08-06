@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle2, XCircle, HelpCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, XCircle, HelpCircle } from "lucide-react";
 import { getTodayAttendance } from "@/server/attendance.server";
 import { getStudentById } from "@/server/student.server";
 import { getParentsByStudentId } from "@/server/parent.server";
@@ -31,7 +31,15 @@ export default async function StudentDetailPage({
 
   return (
     <div className="p-6">
-      <p className="font-mono text-xs tracking-[0.2em] text-[var(--slate)]">
+      <Link
+        href="/dashboard/students"
+        className="inline-flex items-center gap-1.5 text-sm text-[var(--slate)] transition-colors hover:text-[var(--ink)]"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to students
+      </Link>
+
+      <p className="mt-4 font-mono text-xs tracking-[0.2em] text-[var(--slate)]">
         STUDENT
       </p>
       <h2 className="mt-1 font-serif text-2xl text-[var(--ink)]">
