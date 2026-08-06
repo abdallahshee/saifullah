@@ -1,3 +1,5 @@
+"use server";
+
 import { requireRole } from "@/lib/auth/current-profile";
 import { db } from "@/lib/db";
 import { classes, students, profiles } from "@/lib/db/schema";

@@ -1,3 +1,5 @@
+"use server";
+
 import { db } from "@/lib/db";
 import { profiles } from "@/lib/db/schema";
 import { ProfileRequest, secretarySchema, teacherSchema } from "@/lib/db/types/profiles.types";
