@@ -5,8 +5,8 @@ import { useForm } from "@mantine/form";
 import { schemaResolver } from "@mantine/form";
 import { TextInput } from "@mantine/core";
 import { CheckCircle2, AlertCircle } from "lucide-react";
-import { ProfileRequest, profileSchema } from "@/lib/db/types/profiles.types";
-import { createSecretary } from "@/server/secretary.server";
+import { ProfileRequest, profileSchema } from "@/lib/db/types/profiles.types"
+import { createSecretary } from "@/server/staff.server";
 
 type SubmitResult =
   | { status: "idle" }
@@ -44,6 +44,36 @@ export function CreateSecretaryForm() {
       onSubmit={handleSubmit}
       className="flex w-full max-w-6xl flex-col gap-4"
     >
+      {/* daisyUI alert - success variant */}
+      {result.status === "success" && (
+        <div role="alert" className="alert alert-success">
+          <CheckCircle2 className="h-5 w-5" />
+          <div>
+            <h3 className="font-bold">Secretary created</h3>
+            <div className="text-sm">
+              Account created for {result.email}.
+              {result.temporaryPassword && (
+                <>
+                  {" "}
+                  Temporary password: <code>{result.temporaryPassword}</code>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* daisyUI alert - error variant */}
+      {result.status === "error" && (
+        <div role="alert" className="alert alert-error">
+          <AlertCircle className="h-5 w-5" />
+          <div>
+            <h3 className="font-bold">Couldn't create secretary</h3>
+            <div className="text-sm">{result.message}</div>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-4 sm:flex-row">
         <TextInput
           label="First name"
@@ -88,36 +118,6 @@ export function CreateSecretaryForm() {
         )}
         {form.submitting ? "Adding..." : "Add secretary"}
       </button>
-
-      {/* daisyUI alert - success variant */}
-      {result.status === "success" && (
-        <div role="alert" className="alert alert-success">
-          <CheckCircle2 className="h-5 w-5" />
-          <div>
-            <h3 className="font-bold">Secretary created</h3>
-            <div className="text-sm">
-              Account created for {result.email}.
-              {result.temporaryPassword && (
-                <>
-                  {" "}
-                  Temporary password: <code>{result.temporaryPassword}</code>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* daisyUI alert - error variant */}
-      {result.status === "error" && (
-        <div role="alert" className="alert alert-error">
-          <AlertCircle className="h-5 w-5" />
-          <div>
-            <h3 className="font-bold">Couldn't create secretary</h3>
-            <div className="text-sm">{result.message}</div>
-          </div>
-        </div>
-      )}
     </form>
   );
 }

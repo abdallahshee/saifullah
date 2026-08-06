@@ -1,0 +1,126 @@
+"use client";
+
+import { useState } from "react";
+import { useForm } from "@mantine/form";
+import { schemaResolver } from "@mantine/form";
+import { TextInput } from "@mantine/core";
+import { CheckCircle2, AlertCircle } from "lucide-react";
+import { ProfileRequest, teacherSchema } from "@/lib/db/types/profiles.types"
+import { createTeacher } from "@/server/staff.server";
+import { useRouter } from "next/router";
+
+type SubmitResult =
+    | { status: "idle" }
+    | { status: "success"; email: string; temporaryPassword: string | null }
+    | { status: "error"; message: string };
+
+export function CreateTeacherForm() {
+    const router = useRouter();
+    const [result, setResult] = useState<SubmitResult>({ status: "idle" });
+
+    const form = useForm<ProfileRequest>({
+        initialValues: { firstName: "", lastName: "", email: "", phone: "" },
+        validate: schemaResolver(teacherSchema, { sync: true }),
+    });
+
+    const handleSubmit = form.onSubmit(async (values) => {
+        setResult({ status: "idle" });
+        try {
+            const { temporaryPassword } = await createTeacher(values);
+            setResult({
+                status: "success",
+                email: values.email,
+                temporaryPassword: temporaryPassword ?? null,
+            });
+            form.reset();
+            router.push("/dashboard/staffs");
+        } catch (err) {
+            setResult({
+                status: "error",
+                message: err instanceof Error ? err.message : "Couldn't create parent",
+            });
+        }
+    });
+
+    return (
+        <form
+            onSubmit={handleSubmit}
+            className="flex w-full max-w-6xl flex-col gap-4"
+        >
+            {/* daisyUI alert - success variant */}
+            {result.status === "success" && (
+                <div role="alert" className="alert alert-success">
+                    <CheckCircle2 className="h-5 w-5" />
+                    <div>
+                        <h3 className="font-bold">Teacher created</h3>
+                        <div className="text-sm">
+                            Account created for {result.email}.
+                            {result.temporaryPassword && (
+                                <>
+                                    {" "}
+                                    Temporary password: <code>{result.temporaryPassword}</code>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* daisyUI alert - error variant */}
+            {result.status === "error" && (
+                <div role="alert" className="alert alert-error">
+                    <AlertCircle className="h-5 w-5" />
+                    <div>
+                        <h3 className="font-bold">Couldn't create teacher</h3>
+                        <div className="text-sm">{result.message}</div>
+                    </div>
+                </div>
+            )}
+
+            <div className="flex flex-col gap-4 sm:flex-row">
+                <TextInput
+                    label="First name"
+                    placeholder="Jane"
+                    withAsterisk
+                    className="flex-1"
+                    {...form.getInputProps("firstName")}
+                />
+
+                <TextInput
+                    label="Last name"
+                    placeholder="Doe"
+                    withAsterisk
+                    className="flex-1"
+                    {...form.getInputProps("lastName")}
+                />
+            </div>
+
+            <TextInput
+                label="Email"
+                placeholder="jane@school.com"
+                type="email"
+                withAsterisk
+                {...form.getInputProps("email")}
+            />
+
+            <TextInput
+                label="Phone"
+                placeholder="Optional"
+                {...form.getInputProps("phone")}
+            />
+
+            {/* daisyUI button - loading state via btn-disabled + a spinner span,
+          since daisyUI has no built-in `loading` prop like Mantine's Button */}
+            <button
+                type="submit"
+                disabled={form.submitting}
+                className="btn btn-primary"
+            >
+                {form.submitting && (
+                    <span className="loading loading-spinner loading-sm" />
+                )}
+                {form.submitting ? "Adding..." : "Add secretary"}
+            </button>
+        </form>
+    );
+}

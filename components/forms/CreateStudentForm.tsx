@@ -55,6 +55,26 @@ export function CreateStudentForm() {
       onSubmit={handleSubmit}
       className="flex w-full max-w-6xl flex-col gap-4"
     >
+      {result.status === "success" && (
+        <div role="alert" className="alert alert-success">
+          <CheckCircle2 className="h-5 w-5" />
+          <div>
+            <h3 className="font-bold">Student created</h3>
+            <div className="text-sm">{result.message}</div>
+          </div>
+        </div>
+      )}
+
+      {result.status === "error" && (
+        <div role="alert" className="alert alert-error">
+          <AlertCircle className="h-5 w-5" />
+          <div>
+            <h3 className="font-bold">Couldn't create student</h3>
+            <div className="text-sm">{result.message}</div>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-4 sm:flex-row">
         <TextInput
           label="First name"
@@ -97,26 +117,6 @@ export function CreateStudentForm() {
         )}
         {form.submitting ? "Adding..." : "Add student"}
       </button>
-
-      {result.status === "success" && (
-        <div role="alert" className="alert alert-success">
-          <CheckCircle2 className="h-5 w-5" />
-          <div>
-            <h3 className="font-bold">Student created</h3>
-            <div className="text-sm">{result.message}</div>
-          </div>
-        </div>
-      )}
-
-      {result.status === "error" && (
-        <div role="alert" className="alert alert-error">
-          <AlertCircle className="h-5 w-5" />
-          <div>
-            <h3 className="font-bold">Couldn't create student</h3>
-            <div className="text-sm">{result.message}</div>
-          </div>
-        </div>
-      )}
     </form>
   );
 }

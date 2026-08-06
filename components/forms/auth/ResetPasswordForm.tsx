@@ -43,6 +43,13 @@ export function ResetPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
+      {result.status === "error" && (
+        <div role="alert" className="alert alert-error">
+          <AlertCircle className="h-5 w-5" />
+          <span className="text-sm">{result.message}</span>
+        </div>
+      )}
+
       <PasswordInput
         label="New password"
         placeholder="••••••••"
@@ -65,13 +72,6 @@ export function ResetPasswordForm() {
         {form.submitting && <span className="loading loading-spinner loading-sm" />}
         {form.submitting ? "Updating..." : "Update password"}
       </button>
-
-      {result.status === "error" && (
-        <div role="alert" className="alert alert-error">
-          <AlertCircle className="h-5 w-5" />
-          <span className="text-sm">{result.message}</span>
-        </div>
-      )}
     </form>
   );
 }

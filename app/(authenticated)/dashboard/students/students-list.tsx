@@ -44,7 +44,7 @@ function StudentRow({ student }: { student: StudentListItem }) {
             alt={`${student.firstName} ${student.lastName}`}
           />
           <Link
-            href={`/students/${student.id}`}
+            href={`/dashboard/students/${student.id}`}
             className="font-medium text-[var(--ink)] hover:underline"
           >
             {student.firstName}

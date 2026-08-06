@@ -107,34 +107,6 @@ export const createTeacher=async(
 }
 
 
-export const createParent=async(
-  input: ProfileRequest) =>{
-  await requireRole("admin","secretary");
-  const theRole="parent"
-  const parsed = teacherSchema.safeParse({ ...input, roles: theRole });
 
-  if (parsed.error) {
-    return {
-      message: parsed.error.issues[0]?.message ?? "Invalid input",
-    };
-  }
-  try {
-    const { temporaryPassword } = await admitStaffMember(
-      {
-        email: parsed.data.email,
-        firstName: parsed.data.firstName,
-        lastName: parsed.data.lastName,
-        phone: parsed.data.phone ?? undefined,
-        profileUrl: parsed.data.profileUrl ?? undefined
-      },
-      theRole,
-    );
-    return { status: "success", email: parsed.data.email, temporaryPassword };
-  } catch (err) {
-    return {
-      status: "error",
-      message:
-        err instanceof Error ? err.message : "Failed to create parent",
-    };
-  }
-}
+
+

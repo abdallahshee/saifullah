@@ -52,4 +52,3 @@ export const teacherSchema = Schema.extend({
 export type TeacherRequest = z.infer<typeof parentSchema>;
 
 
-

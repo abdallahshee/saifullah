@@ -188,6 +188,20 @@ export function MarkAttendanceForm({ classId }: { classId: string }) {
 
       {loadState.status === "editable" && (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {result.status === "success" && (
+            <div role="alert" className="alert alert-success">
+              <CheckCircle2 className="h-5 w-5" />
+              <div className="text-sm">Attendance submitted successfully.</div>
+            </div>
+          )}
+
+          {result.status === "error" && (
+            <div role="alert" className="alert alert-error">
+              <AlertCircle className="h-5 w-5" />
+              <div className="text-sm">{result.message}</div>
+            </div>
+          )}
+
           {form.values.entries.length === 0 ? (
             <div className="text-sm opacity-70">No students in this class yet.</div>
           ) : (
@@ -248,20 +262,6 @@ export function MarkAttendanceForm({ classId }: { classId: string }) {
                 {form.submitting ? "Submitting..." : "Submit attendance"}
               </button>
             </>
-          )}
-
-          {result.status === "success" && (
-            <div role="alert" className="alert alert-success">
-              <CheckCircle2 className="h-5 w-5" />
-              <div className="text-sm">Attendance submitted successfully.</div>
-            </div>
-          )}
-
-          {result.status === "error" && (
-            <div role="alert" className="alert alert-error">
-              <AlertCircle className="h-5 w-5" />
-              <div className="text-sm">{result.message}</div>
-            </div>
           )}
         </form>
       )}

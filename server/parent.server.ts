@@ -1,8 +1,8 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { profiles } from "@/lib/db/schema";
-import { sql } from "drizzle-orm";
+import { profiles, studentGuardians } from "@/lib/db/schema";
+import { eq, sql } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/current-profile";
 import { admitStaffMember } from "@/lib/auth/admit-staff";
 import { ProfileRequest, secretarySchema } from "@/lib/db/types/profiles.types";
@@ -66,6 +66,43 @@ export async function getParents(): Promise<ParentListItem[]> {
     .from(profiles)
     .where(sql`'parent' = any(${profiles.roles})`)
     .orderBy(profiles.lastName, profiles.firstName);
+
+  return rows;
+}
+
+
+export type StudentGuardian = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string | null;
+  relationship: string;
+};
+
+/**
+ * Returns the parents/guardians linked to a given student via
+ * student_guardians. Same access as the student detail page —
+ * admin, secretary, and teacher.
+ */
+export async function getParentsByStudentId(
+  studentId: string,
+): Promise<StudentGuardian[]> {
+  await requireRole("admin", "secretary", "teacher");
+
+  const rows = await db
+    .select({
+      id: profiles.id,
+      firstName: profiles.firstName,
+      lastName: profiles.lastName,
+      email: profiles.email,
+      phone: profiles.phone,
+      relationship: studentGuardians.relationship,
+    })
+    .from(studentGuardians)
+    .innerJoin(profiles, eq(profiles.id, studentGuardians.parentId))
+    .where(eq(studentGuardians.studentId, studentId))
+    .orderBy(profiles.lastName);
 
   return rows;
 }

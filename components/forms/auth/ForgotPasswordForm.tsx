@@ -57,6 +57,13 @@ export function ForgotPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
+      {result.status === "error" && (
+        <div role="alert" className="alert alert-error">
+          <AlertCircle className="h-5 w-5" />
+          <span className="text-sm">{result.message}</span>
+        </div>
+      )}
+
       <TextInput
         label="Email"
         placeholder="you@school.com"
@@ -73,13 +80,6 @@ export function ForgotPasswordForm() {
         {form.submitting && <span className="loading loading-spinner loading-sm" />}
         {form.submitting ? "Sending..." : "Send reset link"}
       </button>
-
-      {result.status === "error" && (
-        <div role="alert" className="alert alert-error">
-          <AlertCircle className="h-5 w-5" />
-          <span className="text-sm">{result.message}</span>
-        </div>
-      )}
 
       <Link
         href="/login"

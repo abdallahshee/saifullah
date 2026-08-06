@@ -13,7 +13,7 @@ type SubmitResult =
   | { status: "success"; email: string; temporaryPassword: string | null }
   | { status: "error"; message: string };
 
-export function CreateSecretaryForm() {
+export function CreateParentForm() {
   const [result, setResult] = useState<SubmitResult>({ status: "idle" });
 
   const form = useForm<ProfileRequest>({
@@ -44,6 +44,36 @@ export function CreateSecretaryForm() {
       onSubmit={handleSubmit}
       className="flex w-full max-w-6xl flex-col gap-4"
     >
+      {/* daisyUI alert - success variant */}
+      {result.status === "success" && (
+        <div role="alert" className="alert alert-success">
+          <CheckCircle2 className="h-5 w-5" />
+          <div>
+            <h3 className="font-bold">Parent created</h3>
+            <div className="text-sm">
+              Account created for {result.email}.
+              {result.temporaryPassword && (
+                <>
+                  {" "}
+                  Temporary password: <code>{result.temporaryPassword}</code>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* daisyUI alert - error variant */}
+      {result.status === "error" && (
+        <div role="alert" className="alert alert-error">
+          <AlertCircle className="h-5 w-5" />
+          <div>
+            <h3 className="font-bold">Couldn't create parent</h3>
+            <div className="text-sm">{result.message}</div>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-4 sm:flex-row">
         <TextInput
           label="First name"
@@ -88,36 +118,6 @@ export function CreateSecretaryForm() {
         )}
         {form.submitting ? "Adding..." : "Add Parent"}
       </button>
-
-      {/* daisyUI alert - success variant */}
-      {result.status === "success" && (
-        <div role="alert" className="alert alert-success">
-          <CheckCircle2 className="h-5 w-5" />
-          <div>
-            <h3 className="font-bold">Parent created</h3>
-            <div className="text-sm">
-              Account created for {result.email}.
-              {result.temporaryPassword && (
-                <>
-                  {" "}
-                  Temporary password: <code>{result.temporaryPassword}</code>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* daisyUI alert - error variant */}
-      {result.status === "error" && (
-        <div role="alert" className="alert alert-error">
-          <AlertCircle className="h-5 w-5" />
-          <div>
-            <h3 className="font-bold">Couldn't create parent</h3>
-            <div className="text-sm">{result.message}</div>
-          </div>
-        </div>
-      )}
     </form>
   );
 }

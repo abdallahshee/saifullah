@@ -97,3 +97,34 @@ export async function submitClassAttendance(input: MarkAttendanceRequest) {
     )
     .returning();
 }
+
+
+export type TodayAttendance = {
+  status: "present" | "absent";
+  submittedAt: Date;
+} | null;
+
+/**
+ * Returns a student's attendance record for today's date, or null if no
+ * one has marked it yet. Same access as the student detail page.
+ */
+export async function getTodayAttendance(studentId: string): Promise<TodayAttendance> {
+  await requireRole("admin", "secretary", "teacher","secretary");
+
+  const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD", matches the `date` column format
+
+  const [row] = await db
+    .select({
+      status: attendanceRecords.status,
+      submittedAt: attendanceRecords.submittedAt,
+    })
+    .from(attendanceRecords)
+    .where(
+      and(
+        eq(attendanceRecords.studentId, studentId),
+        eq(attendanceRecords.date, today),
+      ),
+    );
+
+  return row ?? null;
+}

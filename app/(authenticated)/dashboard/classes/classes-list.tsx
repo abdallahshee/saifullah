@@ -49,10 +49,7 @@ function ClassRow({ classItem }: { classItem: ClassListItem }) {
       </td>
       <td className="px-4 py-3 text-[var(--slate)]">
         {classItem.teacherName ? (
-          <div className="flex items-center gap-2">
-            <Avatar src={classItem.teacherProfileUrl} alt={classItem.teacherName} />
-            {classItem.teacherName}
-          </div>
+          classItem.teacherName
         ) : (
           <span className="italic text-[var(--slate)]/70">Unassigned</span>
         )}
@@ -73,7 +70,7 @@ function EmptyState() {
       <p className="text-sm text-[var(--slate)]">
         No classes yet — create the first one to get started.
       </p>
-      <Link href="/classes/new" className="btn btn-primary mt-4">
+      <Link href="/dashboard/classes/new" className="btn btn-primary mt-4">
         + Create class
       </Link>
     </div>

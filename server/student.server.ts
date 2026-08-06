@@ -94,3 +94,31 @@ export async function getMyChildren(): Promise<MyChildListItem[]> {
 
   return rows;
 }
+
+
+export type StudentDetail = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string | null;
+  className: string | null;
+};
+
+export async function getStudentById(studentId: string): Promise<StudentDetail | null> {
+  await requireRole("admin", "secretary", "teacher");
+
+  const [row] = await db
+    .select({
+      id: students.id,
+      firstName: students.firstName,
+      lastName: students.lastName,
+      profilePic:students.profileUrl,
+      dateOfBirth: students.dateOfBirth,
+      className: classes.name,
+    })
+    .from(students)
+    .leftJoin(classes, eq(classes.id, students.classId))
+    .where(eq(students.id, studentId));
+
+  return row ?? null;
+}

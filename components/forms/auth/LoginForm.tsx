@@ -39,6 +39,13 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
+      {result.status === "error" && (
+        <div role="alert" className="alert alert-error">
+          <AlertCircle className="h-5 w-5" />
+          <span className="text-sm">{result.message}</span>
+        </div>
+      )}
+
       <TextInput
         label="Email"
         placeholder="you@school.com"
@@ -70,13 +77,6 @@ export function LoginForm() {
         {form.submitting && <span className="loading loading-spinner loading-sm" />}
         {form.submitting ? "Signing in..." : "Sign in"}
       </button>
-
-      {result.status === "error" && (
-        <div role="alert" className="alert alert-error">
-          <AlertCircle className="h-5 w-5" />
-          <span className="text-sm">{result.message}</span>
-        </div>
-      )}
     </form>
   );
 }
