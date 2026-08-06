@@ -1,7 +1,8 @@
 import { getCurrentProfile, requireRole } from "@/lib/auth/current-profile";
 import { db } from "@/lib/db";
-import { students } from "@/lib/db/schema";
+import { classes, students } from "@/lib/db/schema";
 import type { StudentRequest } from "@/lib/db/types/students.types";
+import { eq } from "drizzle-orm";
 
 /**
  * Creates a new student record. Restricted to secretaries and admins.
@@ -21,4 +22,32 @@ export async function createStudent(data: StudentRequest) {
     .returning();
 
   return student;
+}
+
+export type StudentListItem = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  className: string | null;
+};
+
+/**
+ * Returns every student with their class name. Restricted to admin,
+ * secretary, and teacher — matches the students/ route's existing gate.
+ */
+export async function getStudents(): Promise<StudentListItem[]> {
+  await requireRole("admin", "secretary", "teacher");
+
+  const rows = await db
+    .select({
+      id: students.id,
+      firstName: students.firstName,
+      lastName: students.lastName,
+      className: classes.name,
+    })
+    .from(students)
+    .leftJoin(classes, eq(classes.id, students.classId))
+    .orderBy(students.lastName, students.firstName);
+
+  return rows;
 }

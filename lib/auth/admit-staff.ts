@@ -13,7 +13,7 @@ import { ProfileRequest } from "../db/types/profiles.types";
  * policy only allows admins to insert (and there may not be one yet, for
  * the very first admin).
  *
- * `role` is merged into the profile's existing `role` array (deduped)
+ * `role` is merged into the profile's existing `roles` array (deduped)
  * rather than overwriting it, since a profile can hold more than one role.
  *
  * Only ever call this from a trusted, server-only context (a Server
@@ -66,13 +66,13 @@ export async function admitStaffMember(data: ProfileRequest, role: Role) {
   // Upsert the profile row:
   // - If this is a brand-new user, insert with just the one role.
   // - If a profile already exists (e.g. re-admitting with a new role),
-  //   merge the new role into the existing `role` array instead of
+  //   merge the new role into the existing `roles` array instead of
   //   overwriting it, since a single profile can hold multiple roles.
   //   The `sql` fragment does this merge + dedupe atomically in Postgres,
   //   avoiding a read-then-write race condition between concurrent admits.
   await db
     .insert(profiles)
-    .values({ id: userId, firstName, lastName, email, phone, role: [role] })
+    .values({ id: userId, firstName, lastName, email, phone, roles: [role] })
     .onConflictDoUpdate({
       target: profiles.id,
       set: {
@@ -80,9 +80,9 @@ export async function admitStaffMember(data: ProfileRequest, role: Role) {
         lastName,
         email,
         phone,
-        role: sql`(
+        roles: sql`(
           select array_agg(distinct r)
-          from unnest(coalesce(${profiles.role}, '{}'::user_role[]) || array[${role}]::user_role[]) as r
+          from unnest(coalesce(${profiles.roles}, '{}'::user_role[]) || array[${role}]::user_role[]) as r
         )`,
       },
     });

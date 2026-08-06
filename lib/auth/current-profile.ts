@@ -26,7 +26,7 @@ export async function getCurrentProfile() {
 
   if (!profile) return null;
 
-  return { ...profile, roles: profile.role ?? [] };
+  return { ...profile, roles: profile.roles!  };
 }
 
 /**

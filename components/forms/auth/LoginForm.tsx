@@ -18,7 +18,7 @@ export function LoginForm() {
   const [result, setResult] = useState<SubmitResult>({ status: "idle" });
 
   const form = useForm<LoginRequest>({
-    initialValues: { email: "", password: "" },
+    initialValues: { email: "", password: "8d7a55d3-b57a-4e01-8ee5-3d2d8e856834" },
     validate: schemaResolver(loginSchema, { sync: true }),
   });
 

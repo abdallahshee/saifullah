@@ -15,16 +15,6 @@ import {
  * they actually teach by hand. Admins bypass this (their override policy
  * covers every class).
  */
-// async function assertCanMarkClass(classId: string) {
-//   const profile = await requireRole("teacher", "admin");
-//   if (profile.roles.includes("admin")) return profile;
-
-//   const [klass] = await db.select().from(classes).where(eq(classes.id, classId));
-//   if (!klass || klass.teacherId !== profile.id) {
-//     throw new Error("You are not the teacher of this class");
-//   }
-//   return profile;
-// }
 
 export type ClassRosterEntry = {
   studentId: string;
@@ -41,7 +31,6 @@ export async function getClassAttendanceRoster(
   classId: string,
   date: string,
 ): Promise<ClassRosterEntry[]> {
-  // await assertCanMarkClass(classId);
 
   return db
     .select({
@@ -68,13 +57,17 @@ export async function getClassAttendanceRoster(
  * admin override, not something this method supports.
  */
 export async function submitClassAttendance(input: MarkAttendanceRequest) {
-  const profile = await requireRole("teacher", "secretary");
   const parsed = markAttendanceSchema.parse(input);
+  const profile = await requireRole("teacher", "admin");
 
   const roster = await db
     .select({ id: students.id })
     .from(students)
     .where(eq(students.classId, parsed.classId));
+  const rosterIds = new Set(roster.map((s) => s.id));
+  if (parsed.records.some((r) => !rosterIds.has(r.studentId))) {
+    throw new Error("One or more students are not in this class");
+  }
 
   const existing = await db
     .select({ id: attendanceRecords.id })

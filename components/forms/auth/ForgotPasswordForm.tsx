@@ -82,7 +82,7 @@ export function ForgotPasswordForm() {
       )}
 
       <Link
-        href="/auth/login"
+        href="/login"
         className="mt-2 text-center text-xs text-[var(--slate)] underline underline-offset-2 hover:text-[var(--ink)]"
       >
         Back to sign in

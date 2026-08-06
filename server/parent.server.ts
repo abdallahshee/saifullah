@@ -8,7 +8,7 @@ export const createParent=async(
   input: ProfileRequest) =>{
       await requireRole("secretary");
       const theRole="parent"
-  const parsed = secretarySchema.safeParse({ ...input, role: theRole });
+  const parsed = secretarySchema.safeParse({ ...input, roles: theRole });
 
   if (parsed.error) {
     return {

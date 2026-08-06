@@ -11,7 +11,7 @@ import { userRole } from "./enums";
  * first admin has to be inserted directly (RLS blocks insert otherwise) -
  * see drizzle/0001_snapshot's companion migration notes.
  *
- * `role` holds every role a profile has (e.g. a teacher who is also a
+ * `roles` holds every role a profile has (e.g. a teacher who is also a
  * parent at the school), so it's an array column rather than a single
  * enum value.
  *
@@ -28,8 +28,8 @@ export const profiles = pgTable(
     firstName: text("first_name").notNull(),
     lastName: text("last_name").notNull(),
     phone: text("phone"),
-    role: userRole("role").array(),  
-    email:text("email"),
+    roles: userRole("roles").array(),
+    email:text("email").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -70,8 +70,8 @@ export const profiles = pgTable(
     pgPolicy("profiles_write_secretary_parent_only", {
       for: "all",
       to: authenticatedRole,
-      using: sql`has_role('secretary') and 'parent' = any(${t.role})`,
-      withCheck: sql`has_role('secretary') and 'parent' = any(${t.role})`,
+      using: sql`has_role('secretary') and 'parent' = any(${t.roles})`,
+      withCheck: sql`has_role('secretary') and 'parent' = any(${t.roles})`,
     }),
   ],
 ).enableRLS();
