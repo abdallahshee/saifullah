@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { SegmentedControl, TextInput } from "@mantine/core";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { Avatar } from "@/components/Avatar";
 import {
   getClassAttendanceRoster,
   submitClassAttendance,
@@ -62,6 +63,7 @@ export function MarkAttendanceForm({ classId }: { classId: string }) {
             studentId: r.studentId,
             firstName: r.firstName,
             lastName: r.lastName,
+            profileUrl: r.profileUrl,
             status: "present" as const,
           })),
         );
@@ -115,7 +117,7 @@ export function MarkAttendanceForm({ classId }: { classId: string }) {
   });
 
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-4">
+    <div className="flex w-full max-w-6xl flex-col gap-4">
       <TextInput
         label="Date"
         type="date"
@@ -159,7 +161,13 @@ export function MarkAttendanceForm({ classId }: { classId: string }) {
                 {loadState.entries.map((entry) => (
                   <tr key={entry.studentId}>
                     <td>
-                      {entry.firstName} {entry.lastName}
+                      <div className="flex items-center gap-3">
+                        <Avatar
+                          src={entry.profileUrl}
+                          alt={`${entry.firstName} ${entry.lastName}`}
+                        />
+                        {entry.firstName} {entry.lastName}
+                      </div>
                     </td>
                     <td>
                       <span
@@ -206,7 +214,13 @@ export function MarkAttendanceForm({ classId }: { classId: string }) {
                     {form.values.entries.map((entry, index) => (
                       <tr key={entry.studentId}>
                         <td className="whitespace-nowrap">
-                          {entry.firstName} {entry.lastName}
+                          <div className="flex items-center gap-3">
+                            <Avatar
+                              src={entry.profileUrl}
+                              alt={`${entry.firstName} ${entry.lastName}`}
+                            />
+                            {entry.firstName} {entry.lastName}
+                          </div>
                         </td>
                         <td>
                           <SegmentedControl

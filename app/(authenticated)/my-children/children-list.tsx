@@ -1,10 +1,9 @@
+import { MyChildListItem } from "@/server/student.server";
 import Link from "next/link";
-import { School, Users } from "lucide-react";
 import { Avatar } from "@/components/Avatar";
-import type { ClassListItem } from "@/server/classes.server";
 
-export function ClassesList({ classes }: { classes: ClassListItem[] }) {
-  if (classes.length === 0) {
+export function MyChildrenList({ children }: { children: MyChildListItem[] }) {
+  if (children.length === 0) {
     return <EmptyState />;
   }
 
@@ -13,14 +12,14 @@ export function ClassesList({ classes }: { classes: ClassListItem[] }) {
       <table className="w-full text-left text-sm">
         <thead className="bg-[var(--paper)] text-xs uppercase tracking-wide text-[var(--slate)]">
           <tr>
+            <th className="px-4 py-3 font-medium">First name</th>
+            <th className="px-4 py-3 font-medium">Last name</th>
             <th className="px-4 py-3 font-medium">Class</th>
-            <th className="px-4 py-3 font-medium">Teacher</th>
-            <th className="px-4 py-3 font-medium">Students</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-[var(--line)]">
-          {classes.map((c) => (
-            <ClassRow key={c.id} classItem={c} />
+          {children.map((child) => (
+            <ChildRow key={child.id} child={child} />
           ))}
         </tbody>
       </table>
@@ -28,40 +27,30 @@ export function ClassesList({ classes }: { classes: ClassListItem[] }) {
   );
 }
 
-function ClassRow({ classItem }: { classItem: ClassListItem }) {
+function ChildRow({ child }: { child: MyChildListItem }) {
   return (
     <tr className="bg-white transition-colors hover:bg-[var(--paper)]">
       <td className="px-4 py-3">
         <div className="flex items-center gap-3">
           <Avatar
-            src={classItem.classUrl}
-            alt={classItem.name}
-            shape="square"
-            icon={<School />}
+            src={child.profileUrl}
+            alt={`${child.firstName} ${child.lastName}`}
           />
           <Link
-            href={`/classes/${classItem.id}`}
+            href={`/my-children/${child.id}`}
             className="font-medium text-[var(--ink)] hover:underline"
           >
-            {classItem.name}
+            {child.firstName}
           </Link>
         </div>
       </td>
+      <td className="px-4 py-3 text-[var(--ink)]">{child.lastName}</td>
       <td className="px-4 py-3 text-[var(--slate)]">
-        {classItem.teacherName ? (
-          <div className="flex items-center gap-2">
-            <Avatar src={classItem.teacherProfileUrl} alt={classItem.teacherName} />
-            {classItem.teacherName}
-          </div>
+        {child.className ? (
+          child.className
         ) : (
           <span className="italic text-[var(--slate)]/70">Unassigned</span>
         )}
-      </td>
-      <td className="px-4 py-3 text-[var(--slate)]">
-        <span className="inline-flex items-center gap-1.5">
-          <Users className="h-3.5 w-3.5" />
-          {classItem.studentCount}
-        </span>
       </td>
     </tr>
   );
@@ -71,11 +60,9 @@ function EmptyState() {
   return (
     <div className="mt-8 rounded-lg border border-dashed border-[var(--line)] px-6 py-16 text-center">
       <p className="text-sm text-[var(--slate)]">
-        No classes yet — create the first one to get started.
+        No children linked to your account yet. If this seems wrong, contact
+        the school secretary.
       </p>
-      <Link href="/classes/new" className="btn btn-primary mt-4">
-        + Create class
-      </Link>
     </div>
   );
 }

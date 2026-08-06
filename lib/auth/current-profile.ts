@@ -31,7 +31,7 @@ export async function getCurrentProfile() {
 
 /**
  * Server Component / Server Action guard. Drizzle queries run over
- * DATABASE_URL as a single fixed DB role, so the RLS policies on each
+ * DATABASE_URL as a single fixed DB role, so the RLS polwhy icies on each
  * table are NOT applied to them - RLS only kicks in for requests made
  * through Supabase's own API (e.g. a browser using lib/supabase/client.ts).
  * This guard, plus scoping query `.where()` clauses to the caller's role,

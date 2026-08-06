@@ -29,7 +29,7 @@ export async function admitStaffMember(data: ProfileRequest, role: Role) {
   if (!serviceRoleKey || !supabaseUrl)
     throw new Error("SUPABASE_SERVICE_ROLE_KEY is not set");
 
-  const { firstName, lastName, email, phone } = data;
+  const { firstName, lastName, email, phone, profileUrl } = data;
 
   // Service-role client: bypasses RLS entirely, so this must never be
   // constructed on the client or exposed outside a trusted server context.
@@ -72,7 +72,7 @@ export async function admitStaffMember(data: ProfileRequest, role: Role) {
   //   avoiding a read-then-write race condition between concurrent admits.
   await db
     .insert(profiles)
-    .values({ id: userId, firstName, lastName, email, phone, roles: [role] })
+    .values({ id: userId, firstName, lastName, email, phone, profileUrl, roles: [role] })
     .onConflictDoUpdate({
       target: profiles.id,
       set: {
@@ -80,6 +80,7 @@ export async function admitStaffMember(data: ProfileRequest, role: Role) {
         lastName,
         email,
         phone,
+        profileUrl,
         roles: sql`(
           select array_agg(distinct r)
           from unnest(coalesce(${profiles.roles}, '{}'::user_role[]) || array[${role}]::user_role[]) as r

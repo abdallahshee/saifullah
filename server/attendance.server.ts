@@ -20,6 +20,7 @@ export type ClassRosterEntry = {
   studentId: string;
   firstName: string;
   lastName: string;
+  profileUrl: string | null;
   status: "present" | "absent" | null;
 };
 
@@ -37,6 +38,7 @@ export async function getClassAttendanceRoster(
       studentId: students.id,
       firstName: students.firstName,
       lastName: students.lastName,
+      profileUrl: students.profileUrl,
       status: attendanceRecords.status,
     })
     .from(students)

@@ -1,5 +1,5 @@
 {
-  "id": "6625d48c-7538-4e5d-8730-87cb1287fa05",
+  "id": "5100c943-2a66-4462-95f9-3108ff0dce4f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -20,11 +20,23 @@
           "primaryKey": false,
           "notNull": true
         },
+        "profile_url": {
+          "name": "profile_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "last_name": {
           "name": "last_name",
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "date_of_birth": {
+          "name": "date_of_birth",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
         },
         "phone": {
           "name": "phone",
@@ -141,6 +153,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "class_url": {
+          "name": "class_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "teacher_id": {
           "name": "teacher_id",
           "type": "uuid",
@@ -220,6 +238,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "profile_url": {
+          "name": "profile_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "date_of_birth": {
           "name": "date_of_birth",
@@ -392,6 +416,15 @@
           ],
           "using": "has_role('secretary')",
           "withCheck": "has_role('secretary')"
+        },
+        "student_guardians_parent_read_own": {
+          "name": "student_guardians_parent_read_own",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "authenticated"
+          ],
+          "using": "parent_id = auth.uid()"
         }
       },
       "checkConstraints": {},

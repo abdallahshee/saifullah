@@ -9,6 +9,7 @@ export const classes = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull().unique(),
+    classUrl: text("class_url"),
     teacherId: uuid("teacher_id").references(() => profiles.id, {
       onDelete: "set null",
     }),

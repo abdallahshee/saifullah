@@ -34,7 +34,7 @@ export function LoginForm() {
     }
 
     router.refresh();
-    router.push("/"); // middleware/root page can redirect by role from here
+    router.push("/dashboard"); // middleware/root page can redirect by role from here
   });
 
   return (

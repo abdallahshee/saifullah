@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, pgPolicy, uuid, text, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, pgPolicy, uuid, text, timestamp, date } from "drizzle-orm/pg-core";
 import { authUsers, authenticatedRole } from "drizzle-orm/supabase";
 import { userRole } from "./enums";
 
@@ -26,7 +26,9 @@ export const profiles = pgTable(
       .primaryKey()
       .references(() => authUsers.id, { onDelete: "cascade" }),
     firstName: text("first_name").notNull(),
+    profileUrl:text("profile_url"),
     lastName: text("last_name").notNull(),
+    dateOfBirth: date("date_of_birth",{mode:"string"}),
     phone: text("phone"),
     roles: userRole("roles").array(),
     email:text("email").notNull(),

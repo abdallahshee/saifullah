@@ -8,6 +8,7 @@ export type StaffListItem = {
   id: string;
   firstName: string;
   lastName: string;
+  profileUrl: string | null;
   roles: string[];
 };
 
@@ -27,6 +28,7 @@ export async function getStaff(): Promise<StaffListItem[]> {
       id: profiles.id,
       firstName: profiles.firstName,
       lastName: profiles.lastName,
+      profileUrl: profiles.profileUrl,
       roles: profiles.roles,
     })
     .from(profiles)
@@ -57,7 +59,8 @@ export const createSecretary=async(
         email: parsed.data.email,
         firstName: parsed.data.firstName,
         lastName: parsed.data.lastName,
-        phone: parsed.data.phone ?? undefined
+        phone: parsed.data.phone ?? undefined,
+        profileUrl: parsed.data.profileUrl ?? undefined
       },
       theRole,
     );
@@ -88,7 +91,8 @@ export const createTeacher=async(
         email: parsed.data.email,
         firstName: parsed.data.firstName,
         lastName: parsed.data.lastName,
-        phone: parsed.data.phone ?? undefined
+        phone: parsed.data.phone ?? undefined,
+        profileUrl: parsed.data.profileUrl ?? undefined
       },
       theRole,
     );
@@ -120,7 +124,8 @@ export const createParent=async(
         email: parsed.data.email,
         firstName: parsed.data.firstName,
         lastName: parsed.data.lastName,
-        phone: parsed.data.phone ?? undefined
+        phone: parsed.data.phone ?? undefined,
+        profileUrl: parsed.data.profileUrl ?? undefined
       },
       theRole,
     );

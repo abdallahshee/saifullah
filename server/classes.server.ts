@@ -6,7 +6,9 @@ import { eq, sql } from "drizzle-orm";
 export type ClassListItem = {
   id: string;
   name: string;
+  classUrl: string | null;
   teacherName: string | null;
+  teacherProfileUrl: string | null;
   studentCount: number;
 };
 
@@ -21,13 +23,15 @@ export async function getClasses(): Promise<ClassListItem[]> {
     .select({
       id: classes.id,
       name: classes.name,
+      classUrl: classes.classUrl,
       teacherName: sql<string | null>`concat(${profiles.firstName}, ' ', ${profiles.lastName})`,
+      teacherProfileUrl: profiles.profileUrl,
       studentCount: sql<number>`count(${students.id})::int`,
     })
     .from(classes)
     .leftJoin(profiles, eq(profiles.id, classes.teacherId))
     .leftJoin(students, eq(students.classId, classes.id))
-    .groupBy(classes.id, profiles.firstName, profiles.lastName)
+    .groupBy(classes.id, profiles.firstName, profiles.lastName, profiles.profileUrl)
     .orderBy(classes.name);
 
   return rows;

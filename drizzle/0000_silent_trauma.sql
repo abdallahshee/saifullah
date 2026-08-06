@@ -5,7 +5,9 @@ CREATE TYPE "public"."user_role" AS ENUM('admin', 'secretary', 'teacher', 'paren
 CREATE TABLE "profiles" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"first_name" text NOT NULL,
+	"profile_url" text,
 	"last_name" text NOT NULL,
+	"date_of_birth" date,
 	"phone" text,
 	"roles" "user_role"[],
 	"email" text NOT NULL,
@@ -16,6 +18,7 @@ ALTER TABLE "profiles" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
 CREATE TABLE "classes" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
+	"class_url" text,
 	"teacher_id" uuid,
 	CONSTRAINT "classes_name_unique" UNIQUE("name")
 );
@@ -25,6 +28,7 @@ CREATE TABLE "students" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"first_name" text NOT NULL,
 	"last_name" text NOT NULL,
+	"profile_url" text,
 	"date_of_birth" date,
 	"class_id" uuid,
 	"admitted_by" uuid,
@@ -129,62 +133,79 @@ ALTER TABLE "academic_reports" ADD CONSTRAINT "academic_reports_class_id_classes
 ALTER TABLE "academic_reports" ADD CONSTRAINT "academic_reports_teacher_id_profiles_id_fk" FOREIGN KEY ("teacher_id") REFERENCES "public"."profiles"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "academic_reports" ADD CONSTRAINT "academic_reports_term_id_terms_id_fk" FOREIGN KEY ("term_id") REFERENCES "public"."terms"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "academic_reports" ADD CONSTRAINT "academic_reports_sent_by_profiles_id_fk" FOREIGN KEY ("sent_by") REFERENCES "public"."profiles"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
--- RLS helper functions. SECURITY DEFINER so they can read "profiles"/
--- "student_guardians"/"fee_records"/"classes"/"students" on the caller's
--- behalf without those reads recursing back through RLS.
-CREATE FUNCTION public.has_role(p_role "public"."user_role")
-RETURNS boolean
-LANGUAGE sql SECURITY DEFINER STABLE
-SET search_path = public
-AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM profiles
-    WHERE id = auth.uid() AND p_role = any(roles)
-  )
-$$;--> statement-breakpoint
-CREATE FUNCTION public.is_parent_of_student(p_student_id uuid)
-RETURNS boolean
-LANGUAGE sql SECURITY DEFINER STABLE
-SET search_path = public
-AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM student_guardians
-    WHERE student_id = p_student_id AND parent_id = auth.uid()
-  )
-$$;--> statement-breakpoint
-CREATE FUNCTION public.is_parent_of_fee_record(p_fee_record_id uuid)
-RETURNS boolean
-LANGUAGE sql SECURITY DEFINER STABLE
-SET search_path = public
-AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM fee_records fr
-    JOIN student_guardians sg ON sg.student_id = fr.student_id
-    WHERE fr.id = p_fee_record_id AND sg.parent_id = auth.uid()
-  )
-$$;--> statement-breakpoint
-CREATE FUNCTION public.is_teacher_of_class(p_class_id uuid)
-RETURNS boolean
-LANGUAGE sql SECURITY DEFINER STABLE
-SET search_path = public
-AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM classes
-    WHERE id = p_class_id AND teacher_id = auth.uid()
-  )
-$$;--> statement-breakpoint
-CREATE FUNCTION public.is_teacher_of_student(p_student_id uuid)
-RETURNS boolean
-LANGUAGE sql SECURITY DEFINER STABLE
-SET search_path = public
-AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM students s
-    JOIN classes c ON c.id = s.class_id
-    WHERE s.id = p_student_id AND c.teacher_id = auth.uid()
-  )
-$$;--> statement-breakpoint
 CREATE VIEW "public"."fee_balances" WITH (security_invoker = true) AS (select "fee_records"."id", "fee_records"."student_id", "fee_records"."term_id", "fee_records"."class_id", "class_term_fees"."amount", coalesce(sum("fee_payments"."amount"), 0) as "amount_paid", "class_term_fees"."amount" - coalesce(sum("fee_payments"."amount"), 0) as "amount_due" from "fee_records" inner join "class_term_fees" on ("class_term_fees"."term_id" = "fee_records"."term_id" and "class_term_fees"."class_id" = "fee_records"."class_id") left join "fee_payments" on "fee_payments"."fee_record_id" = "fee_records"."id" group by "fee_records"."id", "class_term_fees"."amount");--> statement-breakpoint
+-- The functions below aren't part of lib/db/schema (Drizzle Kit has no
+-- representation for plain SQL functions) - they're baked into this baseline
+-- migration, rather than kept only in supabase/sql/rls-functions.sql,
+-- because the CREATE POLICY statements right after this need them to exist
+-- already. See supabase/sql/rls-functions.sql for the canonical, documented
+-- source and the reasoning behind SECURITY DEFINER + search_path here.
+CREATE OR REPLACE FUNCTION public.has_role(_role public.user_role)
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles WHERE id = auth.uid() AND _role = ANY(roles)
+  );
+$$;--> statement-breakpoint
+GRANT EXECUTE ON FUNCTION public.has_role(public.user_role) TO authenticated;--> statement-breakpoint
+CREATE OR REPLACE FUNCTION public.is_teacher_of_class(_class_id uuid)
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.classes WHERE id = _class_id AND teacher_id = auth.uid()
+  );
+$$;--> statement-breakpoint
+GRANT EXECUTE ON FUNCTION public.is_teacher_of_class(uuid) TO authenticated;--> statement-breakpoint
+CREATE OR REPLACE FUNCTION public.is_parent_of_student(_student_id uuid)
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.student_guardians WHERE student_id = _student_id AND parent_id = auth.uid()
+  );
+$$;--> statement-breakpoint
+GRANT EXECUTE ON FUNCTION public.is_parent_of_student(uuid) TO authenticated;--> statement-breakpoint
+CREATE OR REPLACE FUNCTION public.is_parent_of_fee_record(_fee_record_id uuid)
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.fee_records fr
+    JOIN public.student_guardians sg ON sg.student_id = fr.student_id
+    WHERE fr.id = _fee_record_id AND sg.parent_id = auth.uid()
+  );
+$$;--> statement-breakpoint
+GRANT EXECUTE ON FUNCTION public.is_parent_of_fee_record(uuid) TO authenticated;--> statement-breakpoint
+CREATE OR REPLACE FUNCTION public.is_teacher_of_student(_student_id uuid)
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.students s
+    JOIN public.classes c ON c.id = s.class_id
+    WHERE s.id = _student_id AND c.teacher_id = auth.uid()
+  );
+$$;--> statement-breakpoint
+GRANT EXECUTE ON FUNCTION public.is_teacher_of_student(uuid) TO authenticated;--> statement-breakpoint
 CREATE POLICY "profiles_select_own_or_admin" ON "profiles" AS PERMISSIVE FOR SELECT TO "authenticated" USING ("profiles"."id" = auth.uid() or has_role('admin'));--> statement-breakpoint
 CREATE POLICY "profiles_insert_admin_only" ON "profiles" AS PERMISSIVE FOR INSERT TO "authenticated" WITH CHECK (has_role('admin'));--> statement-breakpoint
 CREATE POLICY "profiles_update_own_or_admin" ON "profiles" AS PERMISSIVE FOR UPDATE TO "authenticated" USING ("profiles"."id" = auth.uid() or has_role('admin')) WITH CHECK ("profiles"."id" = auth.uid() or has_role('admin'));--> statement-breakpoint
@@ -197,6 +218,7 @@ CREATE POLICY "students_select_own_class_teacher" ON "students" AS PERMISSIVE FO
 CREATE POLICY "students_select_own_children_parent" ON "students" AS PERMISSIVE FOR SELECT TO "authenticated" USING (has_role('parent') and is_parent_of_student("students"."id"));--> statement-breakpoint
 CREATE POLICY "students_write_secretary_only" ON "students" AS PERMISSIVE FOR ALL TO "authenticated" USING (has_role('secretary')) WITH CHECK (has_role('secretary'));--> statement-breakpoint
 CREATE POLICY "student_guardians_secretary_only" ON "student_guardians" AS PERMISSIVE FOR ALL TO "authenticated" USING (has_role('secretary')) WITH CHECK (has_role('secretary'));--> statement-breakpoint
+CREATE POLICY "student_guardians_parent_read_own" ON "student_guardians" AS PERMISSIVE FOR SELECT TO "authenticated" USING (parent_id = auth.uid());--> statement-breakpoint
 CREATE POLICY "attendance_records_admin_override" ON "attendance_records" AS PERMISSIVE FOR ALL TO "authenticated" USING (has_role('admin')) WITH CHECK (has_role('admin'));--> statement-breakpoint
 CREATE POLICY "attendance_records_select_own_class_teacher" ON "attendance_records" AS PERMISSIVE FOR SELECT TO "authenticated" USING (has_role('teacher') and is_teacher_of_class("attendance_records"."class_id"));--> statement-breakpoint
 CREATE POLICY "attendance_records_insert_own_class_teacher" ON "attendance_records" AS PERMISSIVE FOR INSERT TO "authenticated" WITH CHECK (has_role('teacher') and is_teacher_of_class("attendance_records"."class_id"));--> statement-breakpoint

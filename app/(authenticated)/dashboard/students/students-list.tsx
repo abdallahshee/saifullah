@@ -1,5 +1,6 @@
 import { StudentListItem } from "@/server/student.server";
 import Link from "next/link";
+import { Avatar } from "@/components/Avatar";
 
 
 export function StudentsList({
@@ -37,16 +38,24 @@ function StudentRow({ student }: { student: StudentListItem }) {
   return (
     <tr className="bg-white transition-colors hover:bg-[var(--paper)]">
       <td className="px-4 py-3">
-        <Link
-          href={`/students/${student.id}`}
-          className="font-medium text-[var(--ink)] hover:underline"
-        >
-          {student.firstName}
-        </Link>
+        <div className="flex items-center gap-3">
+          <Avatar
+            src={student.profileUrl}
+            alt={`${student.firstName} ${student.lastName}`}
+          />
+          <Link
+            href={`/students/${student.id}`}
+            className="font-medium text-[var(--ink)] hover:underline"
+          >
+            {student.firstName}
+          </Link>
+        </div>
       </td>
       <td className="px-4 py-3 text-[var(--ink)]">{student.lastName}</td>
       <td className="px-4 py-3 text-[var(--slate)]">
-        {student.className ?? (
+        {student.className ? (
+          student.className
+        ) : (
           <span className="italic text-[var(--slate)]/70">Unassigned</span>
         )}
       </td>

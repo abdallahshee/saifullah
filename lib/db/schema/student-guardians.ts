@@ -36,5 +36,10 @@ export const studentGuardians = pgTable(
       using: sql`has_role('secretary')`,
       withCheck: sql`has_role('secretary')`,
     }),
+    pgPolicy("student_guardians_parent_read_own", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`parent_id = auth.uid()`,
+    }),
   ],
 ).enableRLS();

@@ -1,6 +1,6 @@
 export default function StaffLoading() {
   return (
-    <div className="mx-auto max-w-4xl px-6 py-10">
+    <div className="mx-auto max-w-6xl px-6 py-10">
       <div className="flex items-center justify-between">
         <div>
           <div className="h-3 w-12 animate-pulse rounded bg-[var(--line)]" />

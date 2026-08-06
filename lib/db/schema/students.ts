@@ -11,6 +11,7 @@ export const students = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     firstName: text("first_name").notNull(),
     lastName: text("last_name").notNull(),
+    profileUrl: text("profile_url"),
     dateOfBirth: date("date_of_birth",{mode:"string"}),
     classId: uuid("class_id").references(() => classes.id, {
       onDelete: "set null",

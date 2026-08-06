@@ -1,5 +1,8 @@
 "use server";
 
+import { db } from "@/lib/db";
+import { profiles } from "@/lib/db/schema";
+import { sql } from "drizzle-orm";
 import { requireRole } from "@/lib/auth/current-profile";
 import { admitStaffMember } from "@/lib/auth/admit-staff";
 import { ProfileRequest, secretarySchema } from "@/lib/db/types/profiles.types";
@@ -21,7 +24,8 @@ export const createParent=async(
         email: parsed.data.email,
         firstName: parsed.data.firstName,
         lastName: parsed.data.lastName,
-        phone: parsed.data.phone ?? undefined
+        phone: parsed.data.phone ?? undefined,
+        profileUrl: parsed.data.profileUrl ?? undefined
       },
       theRole,
     );
@@ -33,4 +37,35 @@ export const createParent=async(
         err instanceof Error ? err.message : "Failed to create parent",
     };
   }
+}
+
+
+export type ParentListItem = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  phone: string | null;
+  email: string;
+  profileUrl: string | null;
+  dateOfBirth: string | null;
+};
+
+export async function getParents(): Promise<ParentListItem[]> {
+  await requireRole("admin", "secretary");
+
+  const rows = await db
+    .select({
+      id: profiles.id,
+      firstName: profiles.firstName,
+      lastName: profiles.lastName,
+      phone: profiles.phone,
+      email: profiles.email,
+      profileUrl: profiles.profileUrl,
+      dateOfBirth: profiles.dateOfBirth,
+    })
+    .from(profiles)
+    .where(sql`'parent' = any(${profiles.roles})`)
+    .orderBy(profiles.lastName, profiles.firstName);
+
+  return rows;
 }

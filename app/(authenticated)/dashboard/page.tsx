@@ -3,7 +3,7 @@ import React from 'react'
 const page = () => {
   return (
      <section className="border-t border-[var(--line)] px-8 py-12 sm:px-12">
-        <div className="mx-auto grid max-w-4xl grid-cols-2 gap-8 sm:grid-cols-4">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 sm:grid-cols-4">
           <RoleItem
             color="var(--role-admin)"
             label="Admins"

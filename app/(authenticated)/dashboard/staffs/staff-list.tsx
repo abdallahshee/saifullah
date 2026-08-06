@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Avatar } from "@/components/Avatar";
 import type { StaffListItem } from "@/server/staff.server";
 
 const ROLE_STYLES: Record<string, string> = {
@@ -36,12 +37,18 @@ function StaffRow({ staff }: { staff: StaffListItem }) {
   return (
     <tr className="bg-white transition-colors hover:bg-[var(--paper)]">
       <td className="px-4 py-3">
-        <Link
-          href={`/staff/${staff.id}`}
-          className="font-medium text-[var(--ink)] hover:underline"
-        >
-          {staff.firstName}
-        </Link>
+        <div className="flex items-center gap-3">
+          <Avatar
+            src={staff.profileUrl}
+            alt={`${staff.firstName} ${staff.lastName}`}
+          />
+          <Link
+            href={`/staff/${staff.id}`}
+            className="font-medium text-[var(--ink)] hover:underline"
+          >
+            {staff.firstName}
+          </Link>
+        </div>
       </td>
       <td className="px-4 py-3 text-[var(--ink)]">{staff.lastName}</td>
       <td className="px-4 py-3">

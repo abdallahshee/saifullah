@@ -42,7 +42,7 @@ export function CreateSecretaryForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex w-full max-w-sm flex-col gap-4 sm:max-w-md"
+      className="flex w-full max-w-6xl flex-col gap-4"
     >
       <div className="flex flex-col gap-4 sm:flex-row">
         <TextInput
