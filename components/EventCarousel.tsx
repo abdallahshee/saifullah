@@ -42,7 +42,7 @@ export function EventCarousel({ events }: { events: CarouselEvent[] }) {
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
         {events.map((event) => (
-          <div key={event.slug} className="relative aspect-[16/9] w-full shrink-0">
+          <div key={event.slug} className="relative aspect-21/9 w-full shrink-0 sm:aspect-3/1">
             <Link href={`/events/${event.slug}`} className="group block h-full w-full">
               <Image
                 src={event.imageUrl}

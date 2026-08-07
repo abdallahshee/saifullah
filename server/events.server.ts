@@ -102,7 +102,7 @@ export async function getUpcomingEvents(): Promise<Event[]> {
         .select()
         .from(events)
         .where(gte(events.eventDate, now))
-        .orderBy(events.eventDate);
+        .orderBy(events.eventDate).limit(3);
     return rows;
 }
 
@@ -124,6 +124,6 @@ export async function getPastEvents(): Promise<CarouselEvent[]> {
         })
         .from(events)
         .where(lte(events.eventDate, now))
-        .orderBy(desc(events.eventDate));
+        .orderBy(desc(events.eventDate)).limit(4);
     return rows;
 }

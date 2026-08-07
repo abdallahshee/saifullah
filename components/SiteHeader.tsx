@@ -11,11 +11,11 @@ const NAV_LINKS = [
   // { href: "/calendar", label: "Calendar" },
 ];
 
-export function SiteHeader({ dark = false }: { dark?: boolean }) {
+export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="drawer">
+    <div className="drawer sticky top-0 z-40">
       <input
         id="site-nav-drawer"
         type="checkbox"
@@ -25,32 +25,17 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
       />
 
       <div className="drawer-content">
-        <header
-          className={`flex items-center justify-between px-8 py-6 sm:px-12 ${
-            dark ? "bg-[var(--brand-navy)]" : ""
-          }`}
-        >
-          <Link
-            href="/"
-            className={`font-serif text-lg ${
-              dark ? "text-white" : "text-[var(--ink)]"
-            }`}
-          >
+        <header className="flex items-center justify-between bg-[var(--brand-navy)] px-8 py-6 sm:px-12">
+          <Link href="/" className="font-serif text-lg text-white">
             Saifullah Integrated Academy
           </Link>
 
-          <nav
-            className={`hidden items-center gap-8 text-sm sm:flex ${
-              dark ? "text-white/60" : "text-[var(--slate)]"
-            }`}
-          >
+          <nav className="hidden items-center gap-8 text-sm text-white/60 sm:flex">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`transition-colors ${
-                  dark ? "hover:text-white" : "hover:text-[var(--ink)]"
-                }`}
+                className="transition-colors hover:text-white"
               >
                 {link.label}
               </Link>
@@ -60,11 +45,7 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
           <div className="flex items-center gap-3">
             <Link
               href="/login"
-              className={`rounded-full border px-5 py-2 text-sm font-medium transition-colors ${
-                dark
-                  ? "border-white/20 text-white hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
-                  : "border-[var(--line)] text-[var(--ink)] hover:border-[var(--brand-navy)] hover:text-[var(--brand-navy)]"
-              }`}
+              className="rounded-full border border-white/20 px-5 py-2 text-sm font-medium text-white transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
             >
               Sign in
             </Link>
@@ -72,11 +53,7 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
             <label
               htmlFor="site-nav-drawer"
               aria-label="Open menu"
-              className={`inline-flex cursor-pointer items-center justify-center rounded-full border p-2 sm:hidden ${
-                dark
-                  ? "border-white/20 text-white"
-                  : "border-[var(--line)] text-[var(--ink)]"
-              }`}
+              className="inline-flex cursor-pointer items-center justify-center rounded-full border border-white/20 p-2 text-white sm:hidden"
             >
               <Menu size={20} />
             </label>
@@ -90,13 +67,13 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
           aria-label="Close menu"
           className="drawer-overlay"
         ></label>
-        <div className="flex h-full w-72 flex-col gap-1 bg-[var(--paper)] p-6">
+        <div className="flex h-full w-72 flex-col gap-1 bg-[var(--brand-navy)] p-6">
           <div className="mb-4 flex items-center justify-between">
-            <span className="font-serif text-lg text-[var(--ink)]">Menu</span>
+            <span className="font-serif text-lg text-white">Menu</span>
             <label
               htmlFor="site-nav-drawer"
               aria-label="Close menu"
-              className="cursor-pointer text-[var(--slate)] hover:text-[var(--ink)]"
+              className="cursor-pointer text-white/60 hover:text-white"
             >
               <X size={20} />
             </label>
@@ -107,7 +84,7 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-2 text-sm text-[var(--slate)] hover:bg-[var(--line)]/40 hover:text-[var(--ink)]"
+              className="rounded-lg px-3 py-2 text-sm text-white/60 hover:bg-white/10 hover:text-white"
             >
               {link.label}
             </Link>

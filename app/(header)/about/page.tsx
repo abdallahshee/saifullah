@@ -60,7 +60,7 @@ const TEAM = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[var(--paper)]">
+    <div className="flex flex-1 flex-col bg-[var(--paper)]">
       {/* Hero image */}
       <div className="relative h-64 w-full sm:h-80 lg:h-96">
         <Image

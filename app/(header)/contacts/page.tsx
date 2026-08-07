@@ -18,7 +18,7 @@ export default function ContactsPage() {
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${SCHOOL_CONTACT.lat},${SCHOOL_CONTACT.lng}`;
 
   return (
-    <div className="min-h-screen bg-[var(--paper)] px-8 py-16 sm:px-12">
+    <div className="flex-1 bg-[var(--paper)] px-8 py-16 sm:px-12">
       <div className="mx-auto max-w-6xl">
         <p className="font-mono text-xs tracking-[0.2em] text-[var(--slate)]">
           CONTACT

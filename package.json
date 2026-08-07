@@ -13,7 +13,8 @@
     "db:studio": "drizzle-kit studio",
     "seed:admin": "tsx scripts/seed-admin.ts",
     "reset:admin": "tsx scripts/reset-admin.ts",
-    "db:seed": "tsx scripts/seed.ts"
+    "db:seed": "tsx scripts/seed.ts",
+    "db:seed:events": "tsx scripts/seed-events.ts"
   },
   "dependencies": {
     "@mantine/core": "^9.5.1",
