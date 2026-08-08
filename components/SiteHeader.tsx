@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { AnimatedLogo } from "./AnimatedLogo";
 
 const NAV_LINKS = [
   { href: "/about", label: "About" },
@@ -26,9 +27,7 @@ export function SiteHeader() {
 
       <div className="drawer-content">
         <header className="flex items-center justify-between bg-[var(--brand-navy)] px-8 py-6 sm:px-12">
-          <Link href="/" className="font-serif text-lg text-white">
-            Saifullah Integrated Academy
-          </Link>
+          <AnimatedLogo />
 
           <nav className="hidden items-center gap-8 text-sm text-white/60 sm:flex">
             {NAV_LINKS.map((link) => (

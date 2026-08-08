@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { CtaBanner } from "@/components/CtaBanner";
 
 // Placeholder data — replace with real content, or fetch from a
 // school-settings server method once one exists.
@@ -64,7 +65,7 @@ export default function AboutPage() {
       {/* Hero image */}
       <div className="relative h-64 w-full sm:h-80 lg:h-96">
         <Image
-          src={SCHOOL_INFO.heroImageUrl}
+          src="/saifullah.png"
           alt={SCHOOL_INFO.name}
           fill
           priority
@@ -138,6 +139,11 @@ export default function AboutPage() {
           </div>
         </div>
       </div>
+
+      <CtaBanner
+        heading="Ready to join our community?"
+        body="Sign in to view rosters, attendance, and records for your classes, or your children."
+      />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, CalendarDays, CalendarX, MapPin } from "lucide-react";
 import { EventCarousel } from "@/components/EventCarousel";
+import { CtaBanner } from "@/components/CtaBanner";
 import { getPastEvents, getUpcomingEvents } from "@/server/events.server";
 import type { Event } from "@/lib/db/types/events.types";
 
@@ -70,6 +71,8 @@ export default async function EventsPage() {
           )}
         </div>
       </section>
+
+      <CtaBanner heading="Want to know more about an event?" />
     </div>
   );
 }

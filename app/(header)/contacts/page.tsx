@@ -1,4 +1,5 @@
 import { SchoolMap } from "@/components/SchoolMap";
+import { CtaBanner } from "@/components/CtaBanner";
 import { MapPin, Phone, Mail, Landmark, Clock, Navigation } from "lucide-react";
 
 // Placeholder data — replace with real values, or fetch from a
@@ -10,16 +11,16 @@ const SCHOOL_CONTACT = {
   phone: "+254 700 123 456",
   email: "info@rosterschool.ac.ke",
   officeHours: "Mon – Fri, 8:00 AM – 4:30 PM",
-  lat: -1.286389,
-  lng: 36.817223,
+  lat: 4.085627,
+  lng: 39.645836,
 };
-
+// 4.0856279,39.645836
 export default function ContactsPage() {
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${SCHOOL_CONTACT.lat},${SCHOOL_CONTACT.lng}`;
 
   return (
-    <div className="flex-1 bg-[var(--paper)] px-8 py-16 sm:px-12">
-      <div className="mx-auto max-w-6xl">
+    <div className="flex-1 bg-[var(--paper)]">
+      <div className="mx-auto max-w-6xl px-8 py-16 sm:px-12">
         <p className="font-mono text-xs tracking-[0.2em] text-[var(--slate)]">
           CONTACT
         </p>
@@ -72,13 +73,13 @@ export default function ContactsPage() {
           {/* Right column: map */}
           <div className="overflow-hidden rounded-2xl border border-[var(--line)]">
             <SchoolMap
-              lat={SCHOOL_CONTACT.lat}
-              lng={SCHOOL_CONTACT.lng}
-              label={SCHOOL_CONTACT.addressLine}
+     
             />
           </div>
         </div>
       </div>
+
+      <CtaBanner heading="Still have questions?" />
     </div>
   );
 }
