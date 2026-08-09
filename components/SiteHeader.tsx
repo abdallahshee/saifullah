@@ -26,8 +26,8 @@ export function SiteHeader() {
       />
 
       <div className="drawer-content">
-        <header className="flex flex-wrap items-center gap-y-3 bg-[var(--brand-navy)] px-8 py-6 sm:flex-nowrap sm:justify-between sm:px-12">
-          <div className="order-2 w-full sm:order-none sm:w-auto">
+        <header className="flex items-center justify-between bg-[var(--brand-navy)] px-8 py-6 sm:px-12">
+          <div className="hidden sm:block">
             <AnimatedLogo />
           </div>
 
@@ -43,7 +43,7 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="order-1 ml-auto flex items-center gap-3 sm:order-none sm:ml-0">
+          <div className="flex items-center gap-3">
             <Link
               href="/login"
               className="rounded-full border border-white/20 px-5 py-2 text-sm font-medium text-white transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
