@@ -17,7 +17,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             Sign in to manage admissions, rosters, and daily attendance.
           </p>
 
-          <div className="mt-8">{children}</div>
+          <div className="mt-8 max-h-[2400vh] overflow-y-auto">"{children}</div>
         </div>
       </div>
     </div>

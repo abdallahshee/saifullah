@@ -3,7 +3,7 @@ import React from 'react'
 
 const page = () => {
   return (
-    <div>
+    <div className="max-h-[1200vh] overflow-y-auto">
         <LoginForm/>
     </div>
   )
