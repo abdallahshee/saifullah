@@ -103,8 +103,8 @@ export default function Home() {
       {/* Stats strip */}
 <section>
   <div
-    className="mx-auto grid max-w-6xl gap-6 px-8 py-10 sm:px-12"
-    style={{ gridTemplateColumns: `repeat(${STATS.length}, minmax(0, 1fr))` }}
+    className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-8 py-10 sm:grid-cols-[repeat(var(--stats-cols),minmax(0,1fr))] sm:px-12"
+    style={{ "--stats-cols": STATS.length } as React.CSSProperties}
   >
     {STATS.map((stat) => (
       <div
