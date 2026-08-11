@@ -90,10 +90,9 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div id="sasa" className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-center text-xs text-white/40 sm:flex-row sm:gap-4 sm:text-left">
+        <div id="sasa" className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-center text-xs text-white/40">
           <p>© {year} Saifullah Integrated Academy. All rights reserved.</p>
-          <p> Handcrafted By Developer Shee - +254796515302</p>
-          
+          <p>Handcrafted By Developer Shee - +254796515302</p>
         </div>
       </div>
     </footer>
