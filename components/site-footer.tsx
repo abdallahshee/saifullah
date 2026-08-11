@@ -50,9 +50,6 @@ export function SiteFooter() {
                   {link.label}
                 </Link>
               ))}
-              <Link href="/login" className="transition-colors hover:text-white">
-                Sign in
-              </Link>
             </nav>
           </div>
 
