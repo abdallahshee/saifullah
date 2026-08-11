@@ -1,6 +1,6 @@
 import { StudentListItem } from "@/server/student.server";
 import Link from "next/link";
-import { Avatar } from "@/components/Avatar";
+import { Avatar } from "@/components/avatar";
 
 
 export function StudentsList({

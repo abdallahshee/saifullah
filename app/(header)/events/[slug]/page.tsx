@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarDays, Clock, MapPin } from "lucide-react";
-import { EventGallery, type GalleryImage } from "@/components/EventGallery";
+import { EventGallery, type GalleryImage } from "@/components/event-gallery";
 import { getEventBySlug } from "@/server/events.server";
 
 export default async function EventDetailsPage({

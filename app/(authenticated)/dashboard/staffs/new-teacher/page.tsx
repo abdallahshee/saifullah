@@ -1,4 +1,4 @@
-import { CreateTeacherForm } from '@/components/forms/CreateTeacherForm'
+import { CreateTeacherForm } from '@/components/forms/create-teacher-form'
 import { requireRole } from '@/lib/auth/current-profile'
 
 

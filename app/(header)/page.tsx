@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Award, ShieldCheck, Users } from "lucide-react";
-import { CtaBanner } from "@/components/CtaBanner";
+import { CtaBanner } from "@/components/cta-banner";
 
 // Placeholder data — replace with real values, or fetch from a
 // school-settings server method once one exists, matching the details

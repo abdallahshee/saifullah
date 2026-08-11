@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Avatar } from "@/components/Avatar";
+import { Avatar } from "@/components/avatar";
 import type { StaffListItem } from "@/server/staff.server";
 
 const ROLE_STYLES: Record<string, string> = {

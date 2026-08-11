@@ -7,7 +7,7 @@ import { desc, eq, gte, lt, lte, sql } from "drizzle-orm";
 import { EventRequest, eventSchema, type Event } from "@/lib/db/types/events.types";
 import { profiles } from "@/lib/db/schema";
 import slugify from "slugify"
-import { CarouselEvent } from "@/components/EventCarousel";
+import { CarouselEvent } from "@/components/event-carousel";
 
 /**
  * Creates a new event. Restricted to admin and secretary.

@@ -1,4 +1,4 @@
-import { CreateSecretaryForm } from '@/components/forms/CreateSecretaryForm'
+import { CreateSecretaryForm } from '@/components/forms/create-secretary-form'
 import { requireRole } from '@/lib/auth/current-profile'
 
 export default async function page() {

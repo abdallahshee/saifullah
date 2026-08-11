@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { CtaBanner } from "@/components/CtaBanner";
+import { CtaBanner } from "@/components/cta-banner";
 
 // Placeholder data — replace with real content, or fetch from a
 // school-settings server method once one exists.

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, CalendarDays, CalendarX, MapPin } from "lucide-react";
-import { EventCarousel } from "@/components/EventCarousel";
-import { CtaBanner } from "@/components/CtaBanner";
+import { EventCarousel } from "@/components/event-carousel";
+import { CtaBanner } from "@/components/cta-banner";
 import { getPastEvents, getUpcomingEvents } from "@/server/events.server";
 import type { Event } from "@/lib/db/types/events.types";
 

@@ -17,9 +17,9 @@ const DEFAULT_RELATIONSHIP_COLOR = "#94A3B8";
 export default async function StudentDetailPage({
   params,
 }: {
-  params: Promise<{ studentId: string }>;
+  params: Promise<{ "student-id": string }>;
 }) {
-  const { studentId } = await params;
+  const { "student-id": studentId } = await params;
 
   const [student, guardians, todayAttendance] = await Promise.all([
     getStudentById(studentId),

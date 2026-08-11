@@ -2,14 +2,15 @@
 
 ## Components
 - All React components should live in the `components/` folder
-- Use PascalCase for component file names (e.g., `UserCard.jsx`)
+- Use kebab-case for component file names (e.g., `user-card.tsx`); the exported component/function name stays PascalCase (e.g., `export function UserCard()`)
 - Keep one component per file
 
 ## Forms
 - All form components should live in the `forms/` folder
-- Component/file names must be appended with `Form`
-  - e.g. `LoginForm.tsx`, `UserForm.tsx`, `AdminCreateForm.tsx`
-- Follow the same component conventions as `components/` (PascalCase, one component per file)
+- File names must be appended with `-form`
+  - e.g. `login-form.tsx`, `user-form.tsx`, `admin-create-form.tsx`
+- The exported component name must be appended with `Form` (e.g. `LoginForm`, `UserForm`, `AdminCreateForm`)
+- Follow the same component conventions as `components/` (kebab-case file names, one component per file)
 - All the forms elements should be used from the mantine forms
 - Use Tailwind + DaisyUI for form styling and ensure responsiveness, per the rules above
 

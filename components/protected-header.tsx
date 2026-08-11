@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { Profile } from "@/lib/db/types/profiles.types";
-import { Avatar } from "./Avatar";
-import { SignOutButton } from "./SignOutButton";
+import { Avatar } from "./avatar";
+import { SignOutButton } from "./sign-out-button";
 import { Menu, X } from "lucide-react";
 
 export function ProtectedHeader({ profile }: { profile: Profile }) {

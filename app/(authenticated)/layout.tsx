@@ -1,4 +1,4 @@
-import { ProtectedHeader } from "@/components/ProtectedHeader";
+import { ProtectedHeader } from "@/components/protected-header";
 import { getCurrentProfile } from "@/lib/auth/current-profile";
 import { redirect } from "next/navigation";
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { School, Users } from "lucide-react";
-import { Avatar } from "@/components/Avatar";
+import { Avatar } from "@/components/avatar";
 import type { ClassListItem } from "@/server/classes.server";
 
 export function ClassesList({ classes }: { classes: ClassListItem[] }) {

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { AnimatedLogo } from "./AnimatedLogo";
+import { AnimatedLogo } from "./animated-logo";
 
 const NAV_LINKS = [
   { href: "/about", label: "About" },
@@ -43,7 +43,7 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="ml-auto flex items-center gap-3 sm:ml-0">
             <Link
               href="/login"
               className="rounded-full border border-white/20 px-5 py-2 text-sm font-medium text-white transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"

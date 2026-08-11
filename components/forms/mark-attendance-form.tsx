@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { SegmentedControl, TextInput } from "@mantine/core";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
-import { Avatar } from "@/components/Avatar";
+import { Avatar } from "@/components/avatar";
 import {
   getClassAttendanceRoster,
   submitClassAttendance,

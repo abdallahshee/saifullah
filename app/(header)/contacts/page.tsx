@@ -1,5 +1,5 @@
-import { SchoolMap } from "@/components/SchoolMap";
-import { CtaBanner } from "@/components/CtaBanner";
+import { SchoolMap } from "@/components/school-map";
+import { CtaBanner } from "@/components/cta-banner";
 import { MapPin, Phone, Mail, Landmark, Clock, Navigation } from "lucide-react";
 
 // Placeholder data — replace with real values, or fetch from a
