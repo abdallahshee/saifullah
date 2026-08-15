@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A management system for a Grade 1–3 school in Kenya (Next.js App Router + Supabase). Core modules: daily attendance with parent SMS alerts, academic reporting, fee tracking with M-Pesa, and a public website (calendar/announcements) managed from the same admin panel. Three login roles — **admin**, **secretary**, **teacher** — plus optional read-only **parent** portal access; there is no student login. Full product/domain spec (roles, modules, data model, open decisions) lives in `README.md` — read it before building a new feature, since several schema fields (e.g. `academic_reports.subjectRatings`) are intentionally left flexible pending unresolved product decisions.
+A management system for a Grade 1–3 school in Kenya (Next.js App Router + Supabase). Core modules: daily attendance with parent SMS alerts, academic reporting, fee tracking with M-Pesa, and a public website (calendar/announcements) managed from the same admin panel. Three login roles — **admin**, **secretary**, **teacher** — plus optional read-only **parent** portal access; there is no student login. Full product/domain spec (roles, modules, data model, open decisions) lives in `README.md` — read it before building a new feature, since several product decisions (e.g. the M-Pesa aggregator, the academic report template) are still open and flagged there as `Open Decisions`.
 
 ## Commands
 
