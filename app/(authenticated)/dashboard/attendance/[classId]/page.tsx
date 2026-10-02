@@ -1,10 +1,19 @@
 import { MarkAttendanceForm } from '@/components/forms/mark-attendance-form'
-import React from 'react'
 
+type PageProps = {
+  params: Promise<{
+    classId: string
+  }>
+}
 
-export const MarkAttendance = async({params,}:{params:Promise<{ "classId": string }>}) => {
-    const {classId}=await params
+export default async function MarkAttendancePage({
+  params,
+}: PageProps) {
+  const { classId } = await params
+
   return (
-    <div><MarkAttendanceForm classId={classId}/></div>
+    <div>
+      <MarkAttendanceForm classId={classId} />
+    </div>
   )
 }
